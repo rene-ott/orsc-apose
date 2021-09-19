@@ -19,8 +19,9 @@ public final class ScriptListener
     private boolean newWord;
     private volatile boolean banned;
 
+    private volatile boolean reporting = true;
     private static final int REPORT_TIME = 10;
-    private volatile long lastReportTimeInMillis = -1L;
+    private long lastReportTimeInMillis = -1L;
 
     private ScriptListener() {
     }
@@ -60,7 +61,10 @@ public final class ScriptListener
             long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
             if (timeDifferenceInMillis > TimeUnit.SECONDS.toMillis(REPORT_TIME)) {
                 lastReportTimeInMillis = System.currentTimeMillis();
-                reportUserInformation();
+
+                if (reporting) {
+                    reportUserInformation();
+                }
             }
 
             if (script.isSleeping()) {
@@ -184,5 +188,10 @@ public final class ScriptListener
     @Override
     public void setBanned(boolean b) {
         banned = b;
+    }
+
+    @Override
+    public void setReporting(boolean b) {
+        reporting = b;
     }
 }

@@ -236,11 +236,19 @@ public final class BotFrame extends Frame {
             paint.setRenderTextures(t3d.getState());
         });
 
+        final Checkbox reportCheck = new Checkbox("Report", true);
+        setColours(reportCheck);
+        reportCheck.addItemListener(e -> {
+            final IScriptListener sl = client.getScriptListener();
+            sl.setReporting(reportCheck.getState());
+        });
+
         checkPanel.add(loginCheck);
         checkPanel.add(gfxCheck);
         checkPanel.add(paintCheck);
         checkPanel.add(r3d);
         checkPanel.add(t3d);
+        checkPanel.add(reportCheck);
 
         ((Component) client)
                 .addComponentListener(new ComponentAdapter() {
