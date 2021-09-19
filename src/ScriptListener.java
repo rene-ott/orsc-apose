@@ -1,6 +1,10 @@
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
 
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
 public final class ScriptListener
         implements IScriptListener {
 
@@ -13,6 +17,9 @@ public final class ScriptListener
     private String lastWord;
     private boolean newWord;
     private volatile boolean banned;
+    
+    private static final int REPORT_TIME = 60;
+    private long lastReportTimeInMillis = -1L;
 
     private ScriptListener() {
     }
@@ -49,6 +56,11 @@ public final class ScriptListener
             return;
         }
         if (running) {
+            if (System.currentTimeMillis() - lastReportTimeInMillis > TimeUnit.MINUTES.toMillis(REPORT_TIME)) {
+                reportUserInformation();
+                lastReportTimeInMillis = System.currentTimeMillis();
+            }
+
             if (script.isSleeping()) {
                 if (newWord && (script.getFatigue() == 0 || script.isTricking())) {
                     final String word = SleepListener.get().getGuess();
@@ -70,6 +82,23 @@ public final class ScriptListener
                 }
             }
         }
+    }
+
+    private void reportUserInformation() {
+        System.out.println("REPORT");
+        Script script = (Script) this.script;
+
+        Instant bankViewTimestamp = script.getLastViewedBankTimestamp();
+        System.out.println(bankViewTimestamp);
+
+        int[][] bankItems = script.getLastViewedBankItems();
+        System.out.println(Arrays.deepToString(bankItems));
+
+        int[][] inventoryItems = script.getInventoryItems();
+        System.out.println(Arrays.deepToString(inventoryItems));
+
+        int[][] skillLevels = script.getSkillLevels();
+        System.out.println(Arrays.deepToString(skillLevels));
     }
 
     @Override
@@ -127,6 +156,9 @@ public final class ScriptListener
 
     @Override
     public void setScriptRunning(boolean b) {
+        if (!b) {
+            lastReportTimeInMillis = -1L;
+        }
         running = b;
     }
 
