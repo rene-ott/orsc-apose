@@ -1,4 +1,9 @@
 -------------------
+Version 2.X.X
+
+Usability improvements to auth system
+
+-------------------
 Version 2.4.1
 
 Usability improvements to auth system
