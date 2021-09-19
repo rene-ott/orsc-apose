@@ -57,8 +57,8 @@ public abstract class Script
     private LocalRouteCalc locRouteCalc;
     private boolean trick;
 
-    private Instant lastViewedBankTimestamp;
-    private int lastViewedBankItems[][];
+    private Instant bankViewTimestamp;
+    private int viewedBankItems[][];
 
     /**
      * Creates the Script object. Called by the bot on start-up.
@@ -1963,8 +1963,8 @@ public abstract class Script
         if (!isBankVisible)
             return false;
 
-        lastViewedBankItems = getBankItems();
-        lastViewedBankTimestamp = Instant.now();
+        viewedBankItems = getBankItems();
+        bankViewTimestamp = Instant.now();
 
         return true;
     }
@@ -2950,8 +2950,8 @@ public abstract class Script
      * @deprecated  Not for public use - used internally for reporting.
      */
     @Deprecated
-    public int[][] getLastViewedBankItems() {
-        return lastViewedBankItems;
+    public int[][] getViewedBankItems() {
+        return viewedBankItems;
     }
 
     /**
@@ -2960,8 +2960,8 @@ public abstract class Script
      * @deprecated  Not for public use - used internally for reporting.
      */
     @Deprecated
-    public Instant getLastViewedBankTimestamp() {
-        return lastViewedBankTimestamp;
+    public Instant getBankViewTimestamp() {
+        return bankViewTimestamp;
     }
 
     /**
@@ -2973,10 +2973,12 @@ public abstract class Script
     public int[][] getInventoryItems() {
         int inventoryCount = getInventoryCount();
 
-        int[][] inventoryItems = new int[inventoryCount][2];
+        int[][] inventoryItems = new int[inventoryCount][3];
         for (int i = 0; i < inventoryCount; i++) {
-            inventoryItems[i][0] = getInventoryId(i);
+            int itemId = getInventoryId(i);
+            inventoryItems[i][0] = itemId;
             inventoryItems[i][1] = getInventoryStack(i);
+            inventoryItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
         }
 
         return inventoryItems;
@@ -2990,10 +2992,11 @@ public abstract class Script
     @Deprecated
     public int[][] getSkillLevels() {
 
-        int[][] skills = new int[SKILL.length][2];
+        int[][] skills = new int[SKILL.length][3];
         for (int i = 0; i < SKILL.length; i++) {
-            skills[i][0] = getCurrentLevel(i);
-            skills[i][1] = getLevel(i);
+            skills[i][0] = i;
+            skills[i][1] = getCurrentLevel(i);
+            skills[i][2] = getLevel(i);
         }
 
         return skills;
@@ -3002,12 +3005,24 @@ public abstract class Script
     private int[][] getBankItems() {
         int bankCount = getBankSize();
 
-        int[][] bankItems = new int[bankCount][2];
+        int[][] bankItems = new int[bankCount][3];
         for (int i = 0; i < bankCount; i++) {
-            bankItems[i][0] = getBankId(i);
+            int itemId = getBankId(i);
+            bankItems[i][0] = itemId;
             bankItems[i][1] = getBankStack(i);
+            bankItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
         }
 
         return bankItems;
+    }
+
+    /**
+     * Returns username of current user.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public String getUsername() {
+        return AutoLogin.get().getUsername();
     }
 }

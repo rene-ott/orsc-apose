@@ -1,8 +1,9 @@
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
+import com.reporting.ReportDto;
+import com.reporting.ReportService;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public final class ScriptListener
@@ -17,9 +18,9 @@ public final class ScriptListener
     private String lastWord;
     private boolean newWord;
     private volatile boolean banned;
-    
-    private static final int REPORT_TIME = 60;
-    private long lastReportTimeInMillis = -1L;
+
+    private static final int REPORT_TIME = 10;
+    private volatile long lastReportTimeInMillis = -1L;
 
     private ScriptListener() {
     }
@@ -56,9 +57,10 @@ public final class ScriptListener
             return;
         }
         if (running) {
-            if (System.currentTimeMillis() - lastReportTimeInMillis > TimeUnit.MINUTES.toMillis(REPORT_TIME)) {
-                reportUserInformation();
+            long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
+            if (timeDifferenceInMillis > TimeUnit.SECONDS.toMillis(REPORT_TIME)) {
                 lastReportTimeInMillis = System.currentTimeMillis();
+                reportUserInformation();
             }
 
             if (script.isSleeping()) {
@@ -84,21 +86,20 @@ public final class ScriptListener
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void reportUserInformation() {
-        System.out.println("REPORT");
         Script script = (Script) this.script;
 
-        Instant bankViewTimestamp = script.getLastViewedBankTimestamp();
-        System.out.println(bankViewTimestamp);
+        ReportDto dto = ReportDto.create(
+                Instant.now(),
+                script.getUsername(),
+                script.getInventoryItems(),
+                script.getSkillLevels(),
+                script.getBankViewTimestamp(),
+                script.getViewedBankItems()
+        );
 
-        int[][] bankItems = script.getLastViewedBankItems();
-        System.out.println(Arrays.deepToString(bankItems));
-
-        int[][] inventoryItems = script.getInventoryItems();
-        System.out.println(Arrays.deepToString(inventoryItems));
-
-        int[][] skillLevels = script.getSkillLevels();
-        System.out.println(Arrays.deepToString(skillLevels));
+        ReportService.create().sendReport(dto);
     }
 
     @Override

@@ -16,6 +16,7 @@
                 <pathelement location="${jar}"/>
                 <pathelement path="${java.class.path}/"/>
 				<pathelement location="${lib}/rsclassic.jar"/>
+				<pathelement location="${lib}/gson-2.8.8.jar"/>
 			</classpath>
 			<compilerarg line="-Xlint:unchecked"/>
         </javac>
@@ -42,6 +43,7 @@
             <jvmarg line="-Xms312m -Dsun.java2d.opengl=true"/>
             <classpath>
                 <pathelement path="${jar}:${lib}/rsclassic.jar"/>
+			    <pathelement path="${jar}:${lib}/gson-2.8.8.jar"/>
             </classpath>
         </java>
     </target>
