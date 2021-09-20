@@ -1,4 +1,4 @@
-package com.reporting;
+package com.aposbot.report;
 
 public class SkillDto {
     public int id;

@@ -1,4 +1,4 @@
-package com.reporting;
+package com.aposbot.report;
 
 import java.time.Instant;
 import java.util.Arrays;

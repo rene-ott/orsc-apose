@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public final class BotLoader {
 
-    static final String PROPERTIES_FILE = "." + File.separator + "bot.properties";
+    public static final String PROPERTIES_FILE = "." + File.separator + "conf" + File.separator + "bot.properties";
     private final IClientInit init;
     private String username;
     private String password;

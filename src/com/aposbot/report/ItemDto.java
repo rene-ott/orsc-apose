@@ -1,4 +1,4 @@
-package com.reporting;
+package com.aposbot.report;
 
 public class ItemDto {
     public int id;

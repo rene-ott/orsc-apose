@@ -1,7 +1,7 @@
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
-import com.reporting.ReportDto;
-import com.reporting.ReportService;
+import com.aposbot.report.ReportDto;
+import com.aposbot.report.ReportService;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
