@@ -95,7 +95,6 @@ public final class ScriptListener
         Script script = (Script) this.script;
 
         ReportDto dto = ReportDto.create(
-                Instant.now(),
                 script.getUsername(),
                 script.getInventoryItems(),
                 script.getSkillLevels(),

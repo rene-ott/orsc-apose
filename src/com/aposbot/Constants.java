@@ -1,5 +1,7 @@
 package com.aposbot;
 
+import com.aposbot.common.PropReader;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -107,7 +109,7 @@ public final class Constants {
             style = _default.getStyle();
             size = _default.getSize();
         }
-        Properties p = BotLoader.getProperties();
+        Properties p = PropReader.getProperties();
         String name = null;
         if (p != null) {
             name = p.getProperty("font");
