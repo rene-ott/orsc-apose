@@ -69,7 +69,7 @@ public final class EntryFrame extends Frame {
                         final String u = EntryFrame.this.authFrame.getUsername();
                         p.put("username", u);
                         p.put("password", EntryFrame.this.authFrame.getPassword());
-                        try (FileOutputStream out = new FileOutputStream("." + File.separator + "conf" + File.separator + "accounts" + u + ".properties")) {
+                        try (FileOutputStream out = new FileOutputStream("." + File.separator + "conf" + File.separator + "accounts" + File.separator + u + ".properties")) {
                             p.store(out, null);
                         } catch (final Throwable t) {
                             System.out.println("Error saving account details: " + t.toString());
