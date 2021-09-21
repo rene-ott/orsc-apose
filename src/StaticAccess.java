@@ -173,7 +173,7 @@ public final class StaticAccess
                 .append(index).append("_")
                 .append(Long.toHexString(tb.l[index])).toString();
         byte[] data = null;
-        String path = "." + File.separator + "Content" + File.separator + filename;
+        String path = "." + File.separator + "data" + File.separator + "content" + File.separator + filename;
         File file = new File(path);
         boolean file_exists = file.exists();
         URL url = null;

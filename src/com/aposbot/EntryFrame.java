@@ -140,7 +140,7 @@ public final class EntryFrame extends Frame {
             return;
         }
         final Properties p = new Properties();
-        try (FileInputStream stream = new FileInputStream("." + File.separator + "conf" + File.separator + "accounts" + name + ".properties")) {
+        try (FileInputStream stream = new FileInputStream("." + File.separator + "conf" + File.separator + "accounts" + File.separator + name + ".properties")) {
             p.load(stream);
             init.getAutoLogin().setAccount(p.getProperty("username"), p.getProperty("password"));
         } catch (final Throwable t) {
