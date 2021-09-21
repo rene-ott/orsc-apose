@@ -77,7 +77,7 @@ public final class BotFrame extends Frame {
 
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File("." + File.separator + "lib" + File.separator + "logo.png"));
+            image = ImageIO.read(new File("." + File.separator + "data" + File.separator + "icons" + File.separator + "logo.png"));
         } catch (final Throwable t) {
             System.out.println("Error loading logo: " + t.toString());
         }

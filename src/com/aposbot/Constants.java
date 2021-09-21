@@ -93,8 +93,7 @@ public final class Constants {
 
     private static Image readImage(String image) {
         try {
-            return ImageIO.read(new File("." + File.separator +
-                    "lib" + File.separator + image));
+            return ImageIO.read(new File("." + File.separator + "data" + File.separator + "icons" + File.separator + image));
         } catch (final Throwable t) {
             System.out.println("Error loading icon: " + t.toString());
         }
