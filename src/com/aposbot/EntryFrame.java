@@ -18,8 +18,6 @@ import java.util.Properties;
 public final class EntryFrame extends Frame {
 
     public static final String LABEL_NUM3 = "Num3l (Internal)";
-    public static final String LABEL_JOKER = "Joker (Internal/Win32/JNI)";
-    public static final String LABEL_EXTERNAL = "External (HC.BMP/slword.txt)";
     public static final String LABEL_MANUAL = "Manual";
 
     private AuthFrame authFrame;
@@ -92,9 +90,7 @@ public final class EntryFrame extends Frame {
         final CheckboxGroup ocrGroup = new CheckboxGroup();
         final int i = bl.getDefaultOCR();
         ocrPanel.add(new Checkbox(LABEL_NUM3, ocrGroup, i == 0));
-        ocrPanel.add(new Checkbox(LABEL_JOKER, ocrGroup, i == 1));
-        ocrPanel.add(new Checkbox(LABEL_EXTERNAL, ocrGroup, i == 2));
-        ocrPanel.add(new Checkbox(LABEL_MANUAL, ocrGroup, i == 3));
+        ocrPanel.add(new Checkbox(LABEL_MANUAL, ocrGroup, i == 1));
 
         final Panel buttonPanel = new Panel();
 
