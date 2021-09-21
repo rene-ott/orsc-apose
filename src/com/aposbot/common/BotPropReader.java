@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-public class PropReader {
-    
+public class BotPropReader {
+
     private static final String PROPERTIES_FILE = "." + File.separator + "conf" + File.separator + "bot.properties";
 
     public static Properties getProperties() {

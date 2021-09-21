@@ -1,7 +1,7 @@
 package com.aposbot;
 
 import com.aposbot._default.IClientInit;
-import com.aposbot.common.PropReader;
+import com.aposbot.common.BotPropReader;
 
 import java.awt.*;
 import java.io.PrintStream;
@@ -42,7 +42,7 @@ public final class BotLoader {
             System.setOut(ps);
             System.setErr(ps);
         }
-        Properties p = PropReader.getProperties();
+        Properties p = BotPropReader.getProperties();
 		if (p != null) {
 			try {
 				username = p.getProperty("auth_user");
@@ -64,7 +64,7 @@ public final class BotLoader {
     public void storeProperties(final Properties props) {
         Properties p = props;
     	if (p == null) {
-            p = PropReader.getProperties();
+            p = BotPropReader.getProperties();
         }
 
         if (p != null) {
@@ -72,7 +72,7 @@ public final class BotLoader {
             p.put("auth_pass", password);
             p.put("default_ocr", String.valueOf(defaultOCR));
             p.put("font", font == null ? "" : font);
-            PropReader.storeProperties(p);
+            BotPropReader.storeProperties(p);
         }
     }
 

@@ -57,35 +57,32 @@ public final class EntryFrame extends Frame {
         accountPanel.add(accountChoice);
 
         final Button addButton = new Button("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (authFrame == null) {
-                    final AuthFrame authFrame = new AuthFrame("Add an account", null, EntryFrame.this);
-                    authFrame.setFont(Constants.UI_FONT);
-                    authFrame.setIconImages(Constants.ICONS);
-                    authFrame.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            final Properties p = new Properties();
-                            final String u = EntryFrame.this.authFrame.getUsername();
-                            p.put("username", u);
-                            p.put("password", EntryFrame.this.authFrame.getPassword());
-                            try (FileOutputStream out = new FileOutputStream("." + File.separator + "Accounts" + File.separator + u + ".properties")) {
-                                p.store(out, null);
-                            } catch (final Throwable t) {
-                                System.out.println("Error saving account details: " + t.toString());
-                            }
-                            accountChoice.add(u);
-                            accountChoice.select(u);
-                            account = u;
-                            EntryFrame.this.authFrame.setVisible(false);
+        addButton.addActionListener(e -> {
+            if (authFrame == null) {
+                final AuthFrame authFrame = new AuthFrame("Add an account", null, EntryFrame.this);
+                authFrame.setFont(Constants.UI_FONT);
+                authFrame.setIconImages(Constants.ICONS);
+                authFrame.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final Properties p = new Properties();
+                        final String u = EntryFrame.this.authFrame.getUsername();
+                        p.put("username", u);
+                        p.put("password", EntryFrame.this.authFrame.getPassword());
+                        try (FileOutputStream out = new FileOutputStream("." + File.separator + "conf" + File.separator + "accounts" + u + ".properties")) {
+                            p.store(out, null);
+                        } catch (final Throwable t) {
+                            System.out.println("Error saving account details: " + t.toString());
                         }
-                    });
-                    EntryFrame.this.authFrame = authFrame;
-                }
-                authFrame.setVisible(true);
+                        accountChoice.add(u);
+                        accountChoice.select(u);
+                        account = u;
+                        EntryFrame.this.authFrame.setVisible(false);
+                    }
+                });
+                EntryFrame.this.authFrame = authFrame;
             }
+            authFrame.setVisible(true);
         });
 
         accountPanel.add(addButton);
@@ -143,7 +140,7 @@ public final class EntryFrame extends Frame {
             return;
         }
         final Properties p = new Properties();
-        try (FileInputStream stream = new FileInputStream("." + File.separator + "Accounts" + File.separator + name + ".properties")) {
+        try (FileInputStream stream = new FileInputStream("." + File.separator + "conf" + File.separator + "accounts" + name + ".properties")) {
             p.load(stream);
             init.getAutoLogin().setAccount(p.getProperty("username"), p.getProperty("password"));
         } catch (final Throwable t) {
@@ -163,9 +160,9 @@ public final class EntryFrame extends Frame {
 
     private void loadAccounts() {
         try {
-            final File dir = new File("." + File.separator + "Accounts" + File.separator);
+            final File dir = new File("." + File.separator + "conf" + File.separator + "accounts" + File.separator);
             final String[] account_list = dir.list();
-            List<String> accounts = new ArrayList<String>();
+            List<String> accounts = new ArrayList<>();
             if (account_list != null) {
                 for (String s : account_list) {
                     if (s.endsWith("properties")) {
