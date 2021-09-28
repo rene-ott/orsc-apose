@@ -6,6 +6,7 @@ import com.aposbot._default.IScript;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.time.Instant;
 import java.util.HashMap;
 
 public abstract class Script
@@ -55,6 +56,9 @@ public abstract class Script
     private int typeOffset;
     private LocalRouteCalc locRouteCalc;
     private boolean trick;
+
+    private Instant bankViewTimestamp;
+    private int viewedBankItems[][];
 
     /**
      * Creates the Script object. Called by the bot on start-up.
@@ -1954,7 +1958,15 @@ public abstract class Script
      * @return true if the bank screen is visible.
      */
     public boolean isBanking() {
-        return client.isBankVisible();
+        boolean isBankVisible = client.isBankVisible();
+
+        if (!isBankVisible)
+            return false;
+
+        viewedBankItems = getBankItems();
+        bankViewTimestamp = Instant.now();
+
+        return true;
     }
 
     /**
@@ -2930,5 +2942,87 @@ public abstract class Script
 
     public int getGameHeight() {
         return client.getGameHeight();
+    }
+
+    /**
+     * Returns list of bank items based on the last time the script opened the bank.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public int[][] getViewedBankItems() {
+        return viewedBankItems;
+    }
+
+    /**
+     * Returns the timestamp of the last time when script opened the bank.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public Instant getBankViewTimestamp() {
+        return bankViewTimestamp;
+    }
+
+    /**
+     * Returns list of current inventory items.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public int[][] getInventoryItems() {
+        int inventoryCount = getInventoryCount();
+
+        int[][] inventoryItems = new int[inventoryCount][3];
+        for (int i = 0; i < inventoryCount; i++) {
+            int itemId = getInventoryId(i);
+            inventoryItems[i][0] = itemId;
+            inventoryItems[i][1] = getInventoryStack(i);
+            inventoryItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
+        }
+
+        return inventoryItems;
+    }
+
+    /**
+     * Returns list of current skill levels.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public int[][] getSkillLevels() {
+
+        int[][] skills = new int[SKILL.length][3];
+        for (int i = 0; i < SKILL.length; i++) {
+            skills[i][0] = i;
+            skills[i][1] = getCurrentLevel(i);
+            skills[i][2] = getLevel(i);
+        }
+
+        return skills;
+    }
+
+    private int[][] getBankItems() {
+        int bankCount = getBankSize();
+
+        int[][] bankItems = new int[bankCount][3];
+        for (int i = 0; i < bankCount; i++) {
+            int itemId = getBankId(i);
+            bankItems[i][0] = itemId;
+            bankItems[i][1] = getBankStack(i);
+            bankItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
+        }
+
+        return bankItems;
+    }
+
+    /**
+     * Returns username of current user.
+     *
+     * @deprecated  Not for public use - used internally for reporting.
+     */
+    @Deprecated
+    public String getUsername() {
+        return AutoLogin.get().getUsername();
     }
 }

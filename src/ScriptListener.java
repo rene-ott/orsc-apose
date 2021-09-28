@@ -1,11 +1,17 @@
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
+import com.aposbot.common.BotPropReader;
+import com.aposbot.report.ReportDto;
+import com.aposbot.report.ReportIntervalConverter;
+import com.aposbot.report.ReportService;
 
 public final class ScriptListener
         implements IScriptListener {
 
     static final String ERROR_MESSAGE = "Error processing script. Send this output to the script's author:";
     private static final ScriptListener instance = new ScriptListener();
+    private static ReportService reportService;
+
     private Extension ex;
     private long next;
     private boolean running;
@@ -13,6 +19,10 @@ public final class ScriptListener
     private String lastWord;
     private boolean newWord;
     private volatile boolean banned;
+
+    private volatile boolean reporting = true;
+    private static long reportIntervalInMillis;
+    private static long lastReportTimeInMillis = -1;
 
     private ScriptListener() {
     }
@@ -49,6 +59,15 @@ public final class ScriptListener
             return;
         }
         if (running) {
+            long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
+            if (timeDifferenceInMillis > reportIntervalInMillis) {
+                lastReportTimeInMillis = System.currentTimeMillis();
+
+                if (reporting) {
+                    reportUserInformation();
+                }
+            }
+
             if (script.isSleeping()) {
                 if (newWord && (script.getFatigue() == 0 || script.isTricking())) {
                     final String word = SleepListener.get().getGuess();
@@ -70,6 +89,24 @@ public final class ScriptListener
                 }
             }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void reportUserInformation() {
+        Script script = (Script) this.script;
+
+        ReportDto dto = ReportDto.create(
+                script.getUsername(),
+                script.getInventoryItems(),
+                script.getSkillLevels(),
+                script.getBankViewTimestamp(),
+                script.getViewedBankItems()
+        );
+
+        if (reportService == null) {
+            reportService = ReportService.create();
+        }
+        reportService.sendReport(dto);
     }
 
     @Override
@@ -127,6 +164,13 @@ public final class ScriptListener
 
     @Override
     public void setScriptRunning(boolean b) {
+        if (b) {
+            String duration = BotPropReader.getProperties().getProperty("report_interval");
+            reportIntervalInMillis = ReportIntervalConverter.convertToMillis(duration);
+        } else {
+            lastReportTimeInMillis = -1;
+        }
+
         running = b;
     }
 
@@ -151,5 +195,10 @@ public final class ScriptListener
     @Override
     public void setBanned(boolean b) {
         banned = b;
+    }
+
+    @Override
+    public void setReporting(boolean b) {
+        reporting = b;
     }
 }

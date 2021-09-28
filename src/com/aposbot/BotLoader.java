@@ -1,17 +1,14 @@
 package com.aposbot;
 
 import com.aposbot._default.IClientInit;
+import com.aposbot.common.BotPropReader;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
 public final class BotLoader {
 
-    static final String PROPERTIES_FILE = "." + File.separator + "bot.properties";
     private final IClientInit init;
     private String username;
     private String password;
@@ -45,7 +42,7 @@ public final class BotLoader {
             System.setOut(ps);
             System.setErr(ps);
         }
-        Properties p = getProperties();
+        Properties p = BotPropReader.getProperties();
 		if (p != null) {
 			try {
 				username = p.getProperty("auth_user");
@@ -64,34 +61,18 @@ public final class BotLoader {
 
     }
 
-    static Properties getProperties() {
-        Properties p = new Properties();
-        try (FileInputStream in = new FileInputStream(BotLoader.PROPERTIES_FILE)) {
-            p.load(in);
-            if (!p.containsKey("font")) {
-                p.put("font", "");
-            }
-            return p;
-        } catch (Throwable ignored) {
-        }
-        return null;
-    }
-
     public void storeProperties(final Properties props) {
         Properties p = props;
     	if (p == null) {
-            p = getProperties();
+            p = BotPropReader.getProperties();
         }
+
         if (p != null) {
             p.put("auth_user", username);
             p.put("auth_pass", password);
             p.put("default_ocr", String.valueOf(defaultOCR));
             p.put("font", font == null ? "" : font);
-            try (FileOutputStream out = new FileOutputStream(PROPERTIES_FILE)) {
-                p.store(out, null);
-            } catch (final Throwable t) {
-                System.out.println("Error storing updated properties: " + t.toString());
-            }
+            BotPropReader.storeProperties(p);
         }
     }
 

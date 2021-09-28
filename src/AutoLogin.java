@@ -135,4 +135,8 @@ public final class AutoLogin
         this.username = username;
         this.password = password;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }

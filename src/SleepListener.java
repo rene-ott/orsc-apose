@@ -12,17 +12,10 @@ public final class SleepListener
 
     private static final SleepListener instance = new SleepListener();
     private static final int OCR_NUM3 = 0;
-    private static final int OCR_JOKER = 1;
-    private static final int OCR_EXTERNAL = 2;
     private static final int OCR_MANUAL = 3;
-    private static final String hc_bmp = "." + File.separator + "HC.BMP";
-    private static final String slword_txt = "." + File.separator + "slword.txt";
-    private static final String dict_txt = "." + File.separator + "lib" + File.separator + "Dictionary.txt";
-    private static final String model_txt = "." + File.separator + "lib" + File.separator + "Model.txt";
+    private static final String dict_txt = "." + File.separator + "data" + File.separator + "sleeper" + File.separator + "Dictionary.txt";
+    private static final String model_txt = "." + File.separator + "data" + File.separator + "sleeper" + File.separator + "Model.txt";
     private OCR stormy;
-    private File hc;
-    private File slword;
-    private long mod;
     private String sleepWord;
     private int ocrType;
 
@@ -31,22 +24,6 @@ public final class SleepListener
 
     public static void newWord(byte[] data) {
         instance.onNewWord(data);
-    }
-
-    private static String readLine(File file) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
-            return reader.readLine().trim();
-        } catch (final Throwable t) {
-            System.out.println("Error reading slword.txt: " + t.toString());
-        } finally {
-            try {
-                reader.close();
-            } catch (final Throwable t) {
-            }
-        }
-        return null;
     }
 
     private static byte[] convertImage(byte[] data) {
@@ -207,19 +184,6 @@ public final class SleepListener
                 } catch (final IOException ex) {
                 }
             }
-        } else if (type.equals(EntryFrame.LABEL_EXTERNAL)) {
-            hc = new File(hc_bmp);
-            slword = new File(slword_txt);
-            ocrType = OCR_EXTERNAL;
-        } else if (type.equals(EntryFrame.LABEL_JOKER)) {
-            hc = new File(hc_bmp);
-            final Joker joker = Joker.get();
-            if (joker.loadNativeLibrary()) {
-                joker.setFilePaths(model_txt, dict_txt);
-                ocrType = OCR_JOKER;
-            } else {
-                ocrType = OCR_MANUAL;
-            }
         } else {
             ocrType = OCR_MANUAL;
         }
@@ -241,27 +205,6 @@ public final class SleepListener
                     ex.printStackTrace();
                     sleepWord = null;
                 }
-            } else {
-                if (ocrType != OCR_JOKER) {
-                    mod = slword.lastModified();
-                }
-                FileOutputStream out = null;
-                try {
-                    out = new FileOutputStream(hc);
-                    saveBitmap(out, convertImage(data));
-                    if (ocrType == OCR_JOKER) {
-                        sleepWord = Joker.get().getGuess();
-                    }
-                } catch (final IOException ex) {
-                    ex.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.close();
-                        }
-                    } catch (final IOException ex) {
-                    }
-                }
             }
             ScriptListener.get().onNewSleepWord();
         }
@@ -269,14 +212,6 @@ public final class SleepListener
 
     @Override
     public String getGuess() {
-        if (ocrType == OCR_EXTERNAL) {
-            if (mod < slword.lastModified()) {
-                sleepWord = readLine(slword);
-                mod = slword.lastModified();
-                return sleepWord;
-            }
-            return null;
-        }
         return sleepWord;
     }
 }

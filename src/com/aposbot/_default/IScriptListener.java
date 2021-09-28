@@ -24,4 +24,6 @@ public interface IScriptListener {
     boolean hasScript();
 
     void setBanned(boolean b);
+
+    void setReporting(boolean b);
 }

@@ -18,8 +18,6 @@ import java.util.Properties;
 public final class EntryFrame extends Frame {
 
     public static final String LABEL_NUM3 = "Num3l (Internal)";
-    public static final String LABEL_JOKER = "Joker (Internal/Win32/JNI)";
-    public static final String LABEL_EXTERNAL = "External (HC.BMP/slword.txt)";
     public static final String LABEL_MANUAL = "Manual";
 
     private AuthFrame authFrame;
@@ -57,35 +55,32 @@ public final class EntryFrame extends Frame {
         accountPanel.add(accountChoice);
 
         final Button addButton = new Button("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (authFrame == null) {
-                    final AuthFrame authFrame = new AuthFrame("Add an account", null, EntryFrame.this);
-                    authFrame.setFont(Constants.UI_FONT);
-                    authFrame.setIconImages(Constants.ICONS);
-                    authFrame.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            final Properties p = new Properties();
-                            final String u = EntryFrame.this.authFrame.getUsername();
-                            p.put("username", u);
-                            p.put("password", EntryFrame.this.authFrame.getPassword());
-                            try (FileOutputStream out = new FileOutputStream("." + File.separator + "Accounts" + File.separator + u + ".properties")) {
-                                p.store(out, null);
-                            } catch (final Throwable t) {
-                                System.out.println("Error saving account details: " + t.toString());
-                            }
-                            accountChoice.add(u);
-                            accountChoice.select(u);
-                            account = u;
-                            EntryFrame.this.authFrame.setVisible(false);
+        addButton.addActionListener(e -> {
+            if (authFrame == null) {
+                final AuthFrame authFrame = new AuthFrame("Add an account", null, EntryFrame.this);
+                authFrame.setFont(Constants.UI_FONT);
+                authFrame.setIconImages(Constants.ICONS);
+                authFrame.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final Properties p = new Properties();
+                        final String u = EntryFrame.this.authFrame.getUsername();
+                        p.put("username", u);
+                        p.put("password", EntryFrame.this.authFrame.getPassword());
+                        try (FileOutputStream out = new FileOutputStream("." + File.separator + "conf" + File.separator + "accounts" + File.separator + u + ".properties")) {
+                            p.store(out, null);
+                        } catch (final Throwable t) {
+                            System.out.println("Error saving account details: " + t.toString());
                         }
-                    });
-                    EntryFrame.this.authFrame = authFrame;
-                }
-                authFrame.setVisible(true);
+                        accountChoice.add(u);
+                        accountChoice.select(u);
+                        account = u;
+                        EntryFrame.this.authFrame.setVisible(false);
+                    }
+                });
+                EntryFrame.this.authFrame = authFrame;
             }
+            authFrame.setVisible(true);
         });
 
         accountPanel.add(addButton);
@@ -95,9 +90,7 @@ public final class EntryFrame extends Frame {
         final CheckboxGroup ocrGroup = new CheckboxGroup();
         final int i = bl.getDefaultOCR();
         ocrPanel.add(new Checkbox(LABEL_NUM3, ocrGroup, i == 0));
-        ocrPanel.add(new Checkbox(LABEL_JOKER, ocrGroup, i == 1));
-        ocrPanel.add(new Checkbox(LABEL_EXTERNAL, ocrGroup, i == 2));
-        ocrPanel.add(new Checkbox(LABEL_MANUAL, ocrGroup, i == 3));
+        ocrPanel.add(new Checkbox(LABEL_MANUAL, ocrGroup, i == 1));
 
         final Panel buttonPanel = new Panel();
 
@@ -143,7 +136,7 @@ public final class EntryFrame extends Frame {
             return;
         }
         final Properties p = new Properties();
-        try (FileInputStream stream = new FileInputStream("." + File.separator + "Accounts" + File.separator + name + ".properties")) {
+        try (FileInputStream stream = new FileInputStream("." + File.separator + "conf" + File.separator + "accounts" + File.separator + name + ".properties")) {
             p.load(stream);
             init.getAutoLogin().setAccount(p.getProperty("username"), p.getProperty("password"));
         } catch (final Throwable t) {
@@ -163,9 +156,9 @@ public final class EntryFrame extends Frame {
 
     private void loadAccounts() {
         try {
-            final File dir = new File("." + File.separator + "Accounts" + File.separator);
+            final File dir = new File("." + File.separator + "conf" + File.separator + "accounts" + File.separator);
             final String[] account_list = dir.list();
-            List<String> accounts = new ArrayList<String>();
+            List<String> accounts = new ArrayList<>();
             if (account_list != null) {
                 for (String s : account_list) {
                     if (s.endsWith("properties")) {

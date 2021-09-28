@@ -1,5 +1,7 @@
 package com.aposbot;
 
+import com.aposbot.common.BotPropReader;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -91,8 +93,7 @@ public final class Constants {
 
     private static Image readImage(String image) {
         try {
-            return ImageIO.read(new File("." + File.separator +
-                    "lib" + File.separator + image));
+            return ImageIO.read(new File("." + File.separator + "data" + File.separator + "icons" + File.separator + image));
         } catch (final Throwable t) {
             System.out.println("Error loading icon: " + t.toString());
         }
@@ -107,7 +108,7 @@ public final class Constants {
             style = _default.getStyle();
             size = _default.getSize();
         }
-        Properties p = BotLoader.getProperties();
+        Properties p = BotPropReader.getProperties();
         String name = null;
         if (p != null) {
             name = p.getProperty("font");

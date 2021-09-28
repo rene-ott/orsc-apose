@@ -271,7 +271,7 @@ public class PathWalker_Wild extends Script
 	public void init(String params) {
 		start_time = -1L;
 		File dir = new File(
-		    "." + File.separator + "Map" + File.separator);
+		    "." + File.separator + "data" + File.separator + "map" + File.separator);
 		dir.mkdir();
 
 		if (nodes == null) {
@@ -357,7 +357,7 @@ public class PathWalker_Wild extends Script
 
 	private BufferedImage getMapImage() {
 		File file = new File(
-		    "." + File.separator + "Map" + File.separator + "map.png");
+		    "." + File.separator + "data" + File.separator + "map" + File.separator + "map.png");
 
 		System.out.print("Reading map image... ");
 		try {
@@ -845,8 +845,7 @@ public class PathWalker_Wild extends Script
 			System.out.print("Writing path image... ");
 			try {
 				ImageIO.write(image, "PNG", new File(
-				    "." + File.separator + "Map" +
-				    File.separator + "path.png"));
+				    "." + File.separator + "data" + File.separator + "map" + File.separator + "path.png"));
 				System.out.println("done.");
 			} catch (Throwable t) {
 				System.out.println("failed: " + t);
