@@ -7,6 +7,7 @@ import com.aposbot._default.IScriptListener;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +51,17 @@ public final class ScriptFrame extends Frame {
         scroll.add(displayed_list);
         add(scroll, BorderLayout.CENTER);
 
+        // Search panel
+        final Panel searchPanel = new Panel();
+        searchPanel.setLayout(new GridLayout(1, 0));
+        Label searchLabel = new Label("Search:");
+        searchLabel.setFont(Constants.UI_FONT);
+        searchPanel.add(searchLabel);
+
+        TextField searchField = new TextField("");
+        searchPanel.add(searchField);
+        searchField.setFont(Constants.UI_FONT);
+
         final Panel buttonPanel = new Panel();
 
         final Button okButton = new Button("OK");
@@ -69,15 +81,14 @@ public final class ScriptFrame extends Frame {
 
         final Button cancelButton = new Button("Cancel");
         cancelButton.setFont(Constants.UI_FONT);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
+        cancelButton.addActionListener(e -> setVisible(false));
         buttonPanel.add(cancelButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        final Panel southPanel = new Panel();
+        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
+        southPanel.add(searchPanel);
+        southPanel.add(buttonPanel);
+        add(southPanel, BorderLayout.SOUTH);
 
         pack();
         setMinimumSize(getSize());
