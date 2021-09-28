@@ -9,8 +9,6 @@
   <dependencies>
     <dependency org="com.google.code.gson" name="gson" rev="2.8.8" conf="compile->default"/>
 	<dependency org="org.apache.httpcomponents.client5" name="httpclient5" rev="5.1" conf="compile->default"/>
-	<dependency org="org.apache.commons" name="commons-text" rev="1.9" conf="compile->default"/>
-
 
     <dependency org="com.google.code.gson" name="gson" rev="2.8.8" conf="runtime->master"/>
 	<dependency org="org.apache.httpcomponents.client5" name="httpclient5" rev="5.1" conf="runtime->master"/>

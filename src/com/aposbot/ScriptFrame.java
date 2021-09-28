@@ -3,7 +3,6 @@ package com.aposbot;
 import com.aposbot._default.IClient;
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -14,9 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ScriptFrame extends Frame {
 
@@ -109,26 +108,34 @@ public final class ScriptFrame extends Frame {
     }
 
     private int getMatchedScriptIndex() {
-        String inputText = searchField.getText();
+        String inputText = searchField.getText().toLowerCase();
         String[] scripts = displayed_list.getItems();
         if (scripts.length == 0)
             return -1;
 
-        int minLengthIndex = Integer.MAX_VALUE;
-        int minLengthValue = Integer.MAX_VALUE;
-        for (int i = 0; i < scripts.length; i ++) {
-            System.out.println("InputText: " + inputText);
-            System.out.println("CurrentScript: " + scripts[i]);
+        List<Object[]> matchedScripts = new ArrayList<>();
 
-            int len = LevenshteinDistance.getDefaultInstance().apply(inputText, scripts[i]);
-            if (len < minLengthValue) {
-                System.out.println("minLengthValue: " + minLengthValue);
-                System.out.println("minLengthIndex: " + minLengthIndex);
-                minLengthValue = len;
-                minLengthIndex = i;
+        for (int i = 0; i < scripts.length; i ++) {
+            String curScriptName = scripts[i].toLowerCase();
+
+            if (curScriptName.equals(inputText))
+                return i;
+
+            if (curScriptName.contains(inputText)) {
+                matchedScripts.add(new Object[] { curScriptName, i});
             }
         }
-        return minLengthIndex;
+        if (matchedScripts.isEmpty())
+            return -1;
+
+        if (matchedScripts.size() == 1)
+            return (Integer) matchedScripts.get(0)[1];
+
+        List<Object[]> sortedMatchedScripts = matchedScripts.stream().sorted((o1, o2) -> {
+            return ((String)o1[0]).length() - ((String)o2[0]).length();
+        }).collect(Collectors.toList());
+
+        return (Integer)sortedMatchedScripts.get(0)[1];
     }
 
     public void initScript() {
