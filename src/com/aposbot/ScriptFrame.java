@@ -3,16 +3,18 @@ package com.aposbot;
 import com.aposbot._default.IClient;
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public final class ScriptFrame extends Frame {
     private static final String PROCESSING_ERROR = "Error processing script. Send this output to the script's author:";
     private final java.awt.List displayed_list;
     private final TextField field;
+    private TextField searchField;
     private final IClient client;
     private ScriptEngineManager manager;
 
@@ -58,7 +61,24 @@ public final class ScriptFrame extends Frame {
         searchLabel.setFont(Constants.UI_FONT);
         searchPanel.add(searchLabel);
 
-        TextField searchField = new TextField("");
+        searchField = new TextField("");
+        searchField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    displayed_list.select(getMatchedScriptIndex());
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
         searchPanel.add(searchField);
         searchField.setFont(Constants.UI_FONT);
 
@@ -66,17 +86,7 @@ public final class ScriptFrame extends Frame {
 
         final Button okButton = new Button("OK");
         okButton.setFont(Constants.UI_FONT);
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        initScript();
-                    }
-                }, "ScriptInit").start();
-            }
-        });
+        okButton.addActionListener(e -> new Thread(this::initScript, "ScriptInit").start());
         buttonPanel.add(okButton);
 
         final Button cancelButton = new Button("Cancel");
@@ -96,6 +106,29 @@ public final class ScriptFrame extends Frame {
         final Insets in = getInsets();
 
         setSize(in.right + in.left + 310, in.top + in.bottom + 240);
+    }
+
+    private int getMatchedScriptIndex() {
+        String inputText = searchField.getText();
+        String[] scripts = displayed_list.getItems();
+        if (scripts.length == 0)
+            return -1;
+
+        int minLengthIndex = Integer.MAX_VALUE;
+        int minLengthValue = Integer.MAX_VALUE;
+        for (int i = 0; i < scripts.length; i ++) {
+            System.out.println("InputText: " + inputText);
+            System.out.println("CurrentScript: " + scripts[i]);
+
+            int len = LevenshteinDistance.getDefaultInstance().apply(inputText, scripts[i]);
+            if (len < minLengthValue) {
+                System.out.println("minLengthValue: " + minLengthValue);
+                System.out.println("minLengthIndex: " + minLengthIndex);
+                minLengthValue = len;
+                minLengthIndex = i;
+            }
+        }
+        return minLengthIndex;
     }
 
     public void initScript() {
