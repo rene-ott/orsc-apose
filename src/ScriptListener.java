@@ -1,16 +1,17 @@
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
+import com.aposbot.common.BotPropReader;
 import com.aposbot.report.ReportDto;
+import com.aposbot.report.ReportIntervalConverter;
 import com.aposbot.report.ReportService;
-
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 public final class ScriptListener
         implements IScriptListener {
 
     static final String ERROR_MESSAGE = "Error processing script. Send this output to the script's author:";
     private static final ScriptListener instance = new ScriptListener();
+    private static ReportService reportService;
+
     private Extension ex;
     private long next;
     private boolean running;
@@ -20,8 +21,8 @@ public final class ScriptListener
     private volatile boolean banned;
 
     private volatile boolean reporting = true;
-    private static final int REPORT_TIME = 10;
-    private long lastReportTimeInMillis = -1L;
+    private static long reportIntervalInMillis;
+    private static long lastReportTimeInMillis = -1;
 
     private ScriptListener() {
     }
@@ -59,7 +60,7 @@ public final class ScriptListener
         }
         if (running) {
             long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
-            if (timeDifferenceInMillis > TimeUnit.SECONDS.toMillis(REPORT_TIME)) {
+            if (timeDifferenceInMillis > reportIntervalInMillis) {
                 lastReportTimeInMillis = System.currentTimeMillis();
 
                 if (reporting) {
@@ -102,7 +103,10 @@ public final class ScriptListener
                 script.getViewedBankItems()
         );
 
-        ReportService.create().sendReport(dto);
+        if (reportService == null) {
+            reportService = ReportService.create();
+        }
+        reportService.sendReport(dto);
     }
 
     @Override
@@ -160,9 +164,13 @@ public final class ScriptListener
 
     @Override
     public void setScriptRunning(boolean b) {
-        if (!b) {
-            lastReportTimeInMillis = -1L;
+        if (b) {
+            String duration = BotPropReader.getProperties().getProperty("report_interval");
+            reportIntervalInMillis = ReportIntervalConverter.convertToMillis(duration);
+        } else {
+            lastReportTimeInMillis = -1;
         }
+
         running = b;
     }
 
