@@ -33,15 +33,16 @@
       </classpath>
       <compilerarg line="-Xlint:unchecked"/>
     </javac>
-    <jar basedir="${build}" destfile="${jar}" manifest="MANIFEST.MF">
+    <jar basedir="${build}" destfile="${jar}">
       <manifest>
         <attribute name="Main-Class" value="ClientInit"/>
+        <attribute name="Class-Path" value="lib/rsclassic.jar"/>
       </manifest>
     </jar>
 	<delete dir="${build}"/>
   </target>
   
-  <target name="compile-scripts" depends="resolve">
+  <target name="compile-scripts">
     <javac srcdir="${scripts}" destdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}"
            source="${javac.source}">
       <compilerarg line="-Xlint:unchecked"/>
