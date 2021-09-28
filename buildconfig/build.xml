@@ -19,7 +19,7 @@
     <ivy:cachepath pathid="compile.path" conf="compile"/>
   </target>
 
-  <target name="compile" depends="resolve">
+  <target name="compile-bot" depends="resolve">
     <delete file="${jar}"/>
     <delete dir="${build}"/>
     <mkdir dir="${build}"/>
@@ -38,6 +38,10 @@
         <attribute name="Main-Class" value="ClientInit"/>
       </manifest>
     </jar>
+	<delete dir="${build}"/>
+  </target>
+  
+  <target name="compile-scripts" depends="resolve">
     <javac srcdir="${scripts}" destdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}"
            source="${javac.source}">
       <compilerarg line="-Xlint:unchecked"/>
@@ -49,10 +53,9 @@
       </classpath>
       <compilerarg line="-Xlint:deprecation"/>
     </javac>
-    <delete dir="${build}"/>
   </target>
 
-  <target name="runclient">
+  <target name="run-bot">
     <java classname="ClientInit" fork="true">
       <jvmarg line="-Xms312m -Dsun.java2d.opengl=true"/>
       <classpath>
@@ -62,11 +65,6 @@
         </fileset>
       </classpath>
     </java>
-  </target>
-
-  <target name="compile-and-run">
-    <antcall target="compile"/>
-    <antcall target="runclient"/>
   </target>
 
 </project>
