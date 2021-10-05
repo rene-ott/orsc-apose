@@ -3010,10 +3010,11 @@ public abstract class Script
         List<Integer[]> bankItems = new ArrayList<>();
         for (int i = 0; i < bankCount; i++) {
             int itemId = getBankId(i);
-            if (!hasBankItem(itemId))
+            int itemCount = getBankStack(i);
+            if (itemCount == 0)
                 continue;
 
-            Integer[] bankItem = new Integer[] {itemId, getBankStack(i), StaticAccess.get().isItemStackable(itemId) ? 1 : 0 };
+            Integer[] bankItem = new Integer[] {itemId, itemCount, StaticAccess.get().isItemStackable(itemId) ? 1 : 0 };
             bankItems.add(bankItem);
         }
 
