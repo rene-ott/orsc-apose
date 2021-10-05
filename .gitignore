@@ -1,6 +1,5 @@
 # APOS property files
 *.properties
-!bot.properties
 
 # Compiled class file
 build/
