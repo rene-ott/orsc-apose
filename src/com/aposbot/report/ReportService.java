@@ -20,19 +20,22 @@ public class ReportService {
 
     public void sendReport(ReportDto report) {
         String url = BotPropReader.getProperties().getProperty("report_api_url");
-        if (url == null)
+        String apiKey = BotPropReader.getProperties().getProperty("report_api_key");
+
+        if (url == null || apiKey == null)
             return;
 
         executorService.execute(() -> {
             String json = serialize(report);
-            sendRequest(json, url);
+            sendRequest(json, url, apiKey);
         });
     }
 
-    private void sendRequest(String jsonBody, String url) {
+    private void sendRequest(String jsonBody, String url, String apiKey) {
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             httpclient.start();
             SimpleHttpRequest postRequest = SimpleHttpRequest.create(Method.POST.toString(), url);
+            postRequest.setHeader("X-API-KEY", apiKey);
             postRequest.setBody(jsonBody, ContentType.APPLICATION_JSON);
             HttpResponse response = httpclient.execute(postRequest, null).get();
 

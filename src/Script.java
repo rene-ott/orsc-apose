@@ -7,7 +7,9 @@ import com.aposbot._default.IScript;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Script
         implements IScript {
@@ -3005,15 +3007,26 @@ public abstract class Script
     private int[][] getBankItems() {
         int bankCount = getBankSize();
 
-        int[][] bankItems = new int[bankCount][3];
+        List<Integer[]> bankItems = new ArrayList<>();
         for (int i = 0; i < bankCount; i++) {
             int itemId = getBankId(i);
-            bankItems[i][0] = itemId;
-            bankItems[i][1] = getBankStack(i);
-            bankItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
+            int itemCount = getBankStack(i);
+            if (itemCount == 0)
+                continue;
+
+            Integer[] bankItem = new Integer[] {itemId, itemCount, StaticAccess.get().isItemStackable(itemId) ? 1 : 0 };
+            bankItems.add(bankItem);
         }
 
-        return bankItems;
+        int[][] result = new int[bankItems.size()][3];
+        for (int i = 0; i < bankItems.size(); i++) {
+            Integer[] bankItem = bankItems.get(i);
+            result[i][0] = bankItem[0];
+            result[i][1] = bankItem[1];
+            result[i][2] = bankItem[2];
+        }
+
+        return result;
     }
 
     /**
