@@ -1,38 +1,31 @@
-APOS for RSC#234
-================
+# APOS+
 
-APOS was developed by RLN/nade/mofo (2009-2011).
+This is a fork of [ORSC APOS](https://gitlab.com/open-runescape-classic/APOS) with extended features.
 
-APOS was then developed by Stormy from 2012 until 2016.
+## Extended features
 
-This source code was originally released by Stormy in 2016.
+### Account report
+Account report enables the bot to send user data for the preconfigured `APOS+ Report API` at defined intervals.
+The following information is sent:
+ - Skill levels
+ - Inventory items
+ - Bank items (only if a executing script has had bank screen visible)
 
-See also the APOS-Scripts repository, which includes some
-essential components like PathWalker.
+#### How to use
+Follow the instructions to set up the [APOS+ Report API]([https://github.com/rene-ott/orsc-aposp-report)
+Configure following values in the `./conf/bot.properties` file:
+1) report_api_url - APOS+ Report API report endpoint URL.
+2) report_api_key - APOS+ Report API api key, which is necessary to authenticate the request to endpoint.
+3) report_interval - The time interval after which the report is passed to the API. Format `hh:mm:ss` where `hh` hours, `mm` minutes and `ss` seconds.
 
-Keyboard stuff
---------------
-
-* PageUp - Moves the camera away from your player northwards.
-* PageDown - Moves the camera away from your player southwards.
-* Home - Moves the camera away from your player eastwards.
-* End - Moves the camera away from your player westwards.
-* Up - Zooms the camera in.
-* Down - Zooms the camera out.
-* Escape - Resets the camera.
-* F12 - Takes a screenshot, saves it to the Screenshots directory.
-
-Using custom fonts
-------------------
-
-Edit bot.properties and add the following line:
-
+Example configuration:
+```properties
+report_api_url=http://localhost:80/api/reports/account
+report_api_key=hello123
+report_interval=00:10:00
 ```
-font=Comic Neue
-```
+Start the bot and enable the `Report` checkbox
 
-with "Comic Neue" replaced with the font you want to use. Unless you
-want to use Comic Neue.
-
-RSC by default tries to use Helvetica/Arial, but can't if you don't have it
-installed.
+### Other features
+ - Script selection menu contains script search functionality.
+ - Script source can be compiled separately from bot source files with task `compile-scripts.bat`.
