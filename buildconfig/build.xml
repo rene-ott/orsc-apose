@@ -1,71 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="APOS" default="compile-and-run" basedir="../">
-  <property name="src" location="src"/>
-  <property name="build" location="build"/>
-  <property name="scripts" location="Scripts"/>
-  <property name="lib" location="lib"/>
-  <property name="jar" location="bot.jar"/>
-  <property name="javac.source" value="1.8"/>
-  <property name="javac.target" value="1.8"/>
-
+  <property name="src" location="src" />
+  <property name="build" location="build" />
+  <property name="scripts" location="Scripts" />
+  <property name="lib" location="lib" />
+  <property name="jar" location="bot.jar" />
+  <property name="javac.source" value="1.8" />
+  <property name="javac.target" value="1.8" />
+  
   <target name="bootstrap" description="Install ivy">
-    <mkdir dir="${user.home}/.ant/lib"/>
-    <get dest="${user.home}/.ant/lib/ivy.jar"
-         src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar"/>
+    <mkdir dir="${user.home}/.ant/lib" />
+    <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar" />
   </target>
-
+  
   <target name="resolve" description="Use ivy to resolve classpaths" depends="bootstrap">
-    <ivy:resolve file="buildconfig/ivy.xml"/>
-    <ivy:retrieve pattern="${lib}/third-party/[artifact]-[revision].[ext]" conf="runtime"/>
-    <ivy:cachepath pathid="compile.path" conf="compile"/>
+    <ivy:resolve file="buildconfig/ivy.xml" />
+    <ivy:retrieve pattern="${lib}/third-party/[artifact]-[revision].[ext]" conf="runtime" />
+    <ivy:cachepath pathid="compile.path" conf="compile" />
   </target>
-
+  
   <target name="compile-bot" depends="resolve">
-    <delete file="${jar}"/>
-    <delete dir="${build}"/>
-    <mkdir dir="${build}"/>
-    <javac srcdir="${src}" destdir="${build}" debug="on" includeantruntime="false" target="${javac.target}"
-           source="${javac.source}">
+    <delete file="${jar}" />
+    <delete dir="${build}" />
+    <mkdir dir="${build}" />
+    <javac srcdir="${src}" destdir="${build}" debug="on" includeantruntime="false" target="${javac.target}" source="${javac.source}">
       <classpath>
-        <path refid="compile.path"/>
-        <pathelement location="${jar}"/>
-        <pathelement path="${java.class.path}/"/>
-        <pathelement location="${lib}/rsclassic.jar"/>
+        <fileset dir="${lib}">
+          <include name="third-party/*.jar" />
+        </fileset>
+        <pathelement location="${lib}/rsclassic.jar" />
       </classpath>
-      <compilerarg line="-Xlint:unchecked"/>
+      <compilerarg line="-Xlint:unchecked" />
     </javac>
     <jar basedir="${build}" destfile="${jar}">
       <manifest>
-        <attribute name="Main-Class" value="ClientInit"/>
-        <attribute name="Class-Path" value="lib/rsclassic.jar"/>
+        <attribute name="Main-Class" value="ClientInit" />
+        <attribute name="Class-Path" value="lib/rsclassic.jar" />
       </manifest>
+      <zipgroupfileset dir="${lib}" includes="third-party/*.jar" />
     </jar>
-	<delete dir="${build}"/>
+    <delete dir="${build}" />
   </target>
   
   <target name="compile-scripts">
-    <javac srcdir="${scripts}" destdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}"
-           source="${javac.source}">
-      <compilerarg line="-Xlint:unchecked"/>
+    <javac srcdir="${scripts}" destdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}" source="${javac.source}">
+      <compilerarg line="-Xlint:unchecked" />
       <classpath>
-        <pathelement location="${jar}"/>
-        <pathelement path="${java.class.path}/"/>
-        <pathelement location="${lib}/rsclassic.jar"/>
-        <pathelement location="${jar}"/>
+        <pathelement location="${jar}" />
+        <pathelement path="${java.class.path}/" />
+        <pathelement location="${lib}/rsclassic.jar" />
+        <pathelement location="${jar}" />
       </classpath>
-      <compilerarg line="-Xlint:deprecation"/>
+      <compilerarg line="-Xlint:deprecation" />
     </javac>
   </target>
-
+  
   <target name="run-bot">
     <java classname="ClientInit" fork="true">
-      <jvmarg line="-Xms312m -Dsun.java2d.opengl=true"/>
+      <jvmarg line="-Xms312m -Dsun.java2d.opengl=true" />
       <classpath>
-        <pathelement path="${jar}:${lib}/rsclassic.jar"/>
-        <fileset dir="${lib}/third-party">
-          <include name="*.jar"/>
-        </fileset>
+        <pathelement path="${jar}:${lib}/rsclassic.jar" />
       </classpath>
     </java>
   </target>
-
 </project>

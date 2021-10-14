@@ -1,0 +1,6 @@
+[submodule "Scripts/Public"]
+	path = Scripts/Public
+	url = https://github.com/rene-ott/orsc-aposp-public-scripts
+[submodule "Scripts/Private"]
+	path = Scripts/Private
+	url = https://github.com/rene-ott/orsc-aposp-private-scripts
