@@ -12,7 +12,7 @@ The following information is sent:
  - Bank items (only if a executing script has had bank screen visible)
 
 #### How to use
-Follow the instructions to set up the [APOS+ Report API]([https://github.com/rene-ott/orsc-aposp-report)
+Follow the instructions to set up the [APOS+ Report API](https://github.com/rene-ott/orsc-aposp-report)
 Configure following values in the `./conf/bot.properties` file:
 1) report_api_url - APOS+ Report API report endpoint URL.
 2) report_api_key - APOS+ Report API api key, which is necessary to authenticate the request to endpoint.
