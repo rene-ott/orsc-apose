@@ -60,9 +60,6 @@
       <jvmarg line="-Xms312m -Dsun.java2d.opengl=true" />
       <classpath>
         <pathelement path="${jar}:${lib}/rsclassic.jar" />
-        <fileset dir="${lib}/third-party">
-          <include name="*.jar" />
-        </fileset>
       </classpath>
     </java>
   </target>
