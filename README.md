@@ -1,7 +1,7 @@
 # APOS+
 
 This is a fork of [ORSC APOS](https://gitlab.com/open-runescape-classic/APOS) with extended features.
-
+Scripts aren't included by default, but they are included as a git submodule which refers to another [repository](https://github.com/rene-ott/orsc-aposp-scripts). To pull scripts from mentioned repository into `Scripts` directory execute a command `git submodule update --init Scripts`.
 ## Extended features
 
 ### Account report
