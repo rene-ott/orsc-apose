@@ -3,6 +3,7 @@ import com.aposbot._default.IScriptListener;
 import com.aposbot.common.BotPropReader;
 import com.aposbot.report.ReportDto;
 import com.aposbot.report.ReportIntervalConverter;
+import com.aposbot.report.ReportPropReader;
 import com.aposbot.report.ReportService;
 
 public final class ScriptListener
@@ -165,7 +166,7 @@ public final class ScriptListener
     @Override
     public void setScriptRunning(boolean b) {
         if (b) {
-            String duration = BotPropReader.getProperties().getProperty("report_interval");
+            String duration = ReportPropReader.getInterval();
             reportIntervalInMillis = ReportIntervalConverter.convertToMillis(duration);
         } else {
             lastReportTimeInMillis = -1;

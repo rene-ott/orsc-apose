@@ -1,6 +1,5 @@
 package com.aposbot.report;
 
-import com.aposbot.common.BotPropReader;
 import com.google.gson.GsonBuilder;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -19,8 +18,8 @@ public class ReportService {
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void sendReport(ReportDto report) {
-        String url = BotPropReader.getProperties().getProperty("report_api_url");
-        String apiKey = BotPropReader.getProperties().getProperty("report_api_key");
+        String url = ReportPropReader.getApiUrl();
+        String apiKey = ReportPropReader.getApiKey();
 
         if (url == null || apiKey == null)
             return;

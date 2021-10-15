@@ -2,6 +2,7 @@ package com.aposbot;
 
 import com.aposbot._default.*;
 import com.aposbot.applet.AVStub;
+import com.aposbot.report.ReportPropReader;
 
 import javax.imageio.ImageIO;
 import java.applet.Applet;
@@ -212,7 +213,6 @@ public final class BotFrame extends Frame {
         gfxCheck = new Checkbox("Rendering", true);
         setColours(gfxCheck);
         gfxCheck.addItemListener(e -> client.setRendering(gfxCheck.getState()));
-        gfxCheck.setEnabled(false);
 
         final Checkbox paintCheck = new Checkbox("Show bot layer",
                 true);
@@ -236,7 +236,10 @@ public final class BotFrame extends Frame {
             paint.setRenderTextures(t3d.getState());
         });
 
-        final Checkbox reportCheck = new Checkbox("Report", true);
+        boolean isReportEnabled = ReportPropReader.getApiKey() != null && ReportPropReader.getApiUrl() != null;
+        final Checkbox reportCheck = new Checkbox("Report", isReportEnabled);
+        reportCheck.setEnabled(isReportEnabled);
+
         setColours(reportCheck);
         reportCheck.addItemListener(e -> {
             final IScriptListener sl = client.getScriptListener();

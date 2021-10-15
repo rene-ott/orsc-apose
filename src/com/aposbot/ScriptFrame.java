@@ -270,7 +270,8 @@ public final class ScriptFrame extends Frame {
         if (filename.endsWith(".java") ||
                 filename.indexOf('$') != -1 ||
                 filename.startsWith("_") ||
-                filename.indexOf('.') == -1) {
+            filename.startsWith(".") ||
+            filename.indexOf('.') == -1) {
             return;
         }
         list.add(filename);

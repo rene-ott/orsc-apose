@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Bot" type="AntRunConfiguration">
+    <antsettings antfile="file://$PROJECT_DIR$/buildconfig/build.xml" target="run-bot" />
+    <method v="2">
+      <option name="AntTarget" enabled="true" antfile="file://$PROJECT_DIR$/buildconfig/build.xml" target="bootstrap-ivy" />
+      <option name="AntTarget" enabled="true" antfile="file://$PROJECT_DIR$/buildconfig/build.xml" target="restore-libs" />
+      <option name="AntTarget" enabled="true" antfile="file://$PROJECT_DIR$/buildconfig/build.xml" target="compile-bot" />
+    </method>
+  </configuration>
+</component>
