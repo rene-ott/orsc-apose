@@ -42,9 +42,10 @@
     <delete dir="${build}" />
   </target>
   
-  <target name="compile-scripts">
-    <javac srcdir="${scripts}" destdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}" source="${javac.source}">
+  <target name="compile-scripts" depends="dir.private.scripts">
+    <javac srcdir="${scripts}" debug="on" includeantruntime="false" target="${javac.target}" source="${javac.source}">
       <compilerarg line="-Xlint:unchecked" />
+	  <exclude name="${scripts}/Private" unless="dir.exists" />
       <classpath>
         <pathelement location="${jar}" />
         <pathelement path="${java.class.path}/" />
@@ -62,6 +63,12 @@
         <pathelement path="${jar}:${lib}/rsclassic.jar" />
       </classpath>
     </java>
+  </target>
+  
+    <target name="dir.private.scripts">
+    <condition property="dir.exists">
+      <available file="${scripts}/Private" type="dir"/>
+    </condition>
   </target>
   
   <target name="run-bot">
