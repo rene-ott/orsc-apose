@@ -8,18 +8,18 @@
   <property name="javac.source" value="1.8" />
   <property name="javac.target" value="1.8" />
   
-  <target name="bootstrap" description="Install ivy">
+  <target name="bootstrap-ivy" description="Install ivy">
     <mkdir dir="${user.home}/.ant/lib" />
     <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.5.0/ivy-2.5.0.jar" />
   </target>
   
-  <target name="resolve" description="Use ivy to resolve classpaths" depends="bootstrap">
+  <target name="restore-libs" description="Use ivy to resolve classpaths" depends="bootstrap-ivy">
     <ivy:resolve file="buildconfig/ivy.xml" />
     <ivy:retrieve pattern="${lib}/third-party/[artifact]-[revision].[ext]" conf="runtime" />
     <ivy:cachepath pathid="compile.path" conf="compile" />
   </target>
   
-  <target name="compile-bot" depends="resolve">
+  <target name="compile-bot" depends="restore-libs">
     <delete file="${jar}" />
     <delete dir="${build}" />
     <mkdir dir="${build}" />
@@ -53,6 +53,15 @@
       </classpath>
       <compilerarg line="-Xlint:deprecation" />
     </javac>
+  </target>
+  
+  <target name="run-bot-debug">
+    <java classname="ClientInit" fork="true">
+	  <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"/>
+      <classpath>
+        <pathelement path="${jar}:${lib}/rsclassic.jar" />
+      </classpath>
+    </java>
   </target>
   
   <target name="run-bot">

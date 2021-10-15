@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Debug Bot" type="AntRunConfiguration" singleton="false">
+    <antsettings antfile="file://$PROJECT_DIR$/buildconfig/build.xml" target="run-bot-debug" />
+    <method v="2" />
+  </configuration>
+</component>

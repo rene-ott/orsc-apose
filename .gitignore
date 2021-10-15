@@ -1,3 +1,7 @@
+# 3rd party libs
+lib/third-party/*
+!lib/third-party/.gitkeep 
+
 # APOS property files
 *.properties
 
