@@ -126,34 +126,65 @@ public final class PaintListener
             y = 135;
         }
 
-        drawStatBar(x, y, hits, base_hits, HP_FRONT, HP_BACK);
-        client.drawString(String.format("Hits: %d/%d",
-                hits, base_hits), x + 2, y, 2, 0xFFFFFF);
+        int lineBeginX = x;
 
-        y += (BAR_HEIGHT + 7);
 
-        drawStatBar(x, y, pray, base_pray, PRAY_FRONT, PRAY_BACK);
-        client.drawString(String.format("Pray: %d/%d",
-                pray, base_pray), x + 2, y, 2, 0xFFFFFF);
+        String hits1 = String.format("Hits: %d", hits);
+        int hits1Width = client.getGraphics().getFontMetrics().stringWidth(hits1);
+        client.drawString(hits1, x, y, 1, 0xFFFFFF);
+        x += hits1Width + 2;
 
-        y += (BAR_HEIGHT + 5);
+        client.drawString("/", x, y, 1, 0xFF0000);
+        x += 5;
 
-        client.drawString(String.format("Tile: (%d,%d)",
-                client.getLocalX() + client.getAreaX(),
-                client.getLocalY() + client.getAreaY()),
-                x, y, 2, 0xFFFFFF);
-
+        client.drawString(Integer.toString(base_hits), x, y, 1, 0xFFFFFF);
+        x = lineBeginX;
         y += 17;
+
+        String pray1 = String.format("Pray: %d", pray);
+        int pray1Width = client.getGraphics().getFontMetrics().stringWidth(pray1);
+        client.drawString(pray1, x, y, 1, 0xFFFFFF);
+        x += pray1Width + 4;
+
+        client.drawString("/", x, y, 1, 0xFF0000);
+        x +=5;
+
+        client.drawString(Integer.toString(base_pray), x, y, 1, 0xFFFFFF);
+        y += 17;
+        x = lineBeginX;
 
         client.drawString(String.format("Fatigue: %.2f%%",
-                client.getFatigue()),
-                x, y, 2, 0xFFFFFF);
-
+                        client.getFatigue()),
+                x, y, 1, 0xFFFFFF);
         y += 17;
+
+        client.drawString("Tile: ", x, y, 1, 0xFFFFFF);
+        x += 26;
+
+        client.drawString("(", x, y, 1, 0xFF0000);
+        x += 5;
+
+        // See oli 15
+        String posX = client.getLocalX() + client.getAreaX() + "";
+        int posXWidth = client.getGraphics().getFontMetrics().stringWidth(posX);
+        client.drawString(posX, x, y, 1, 0xFFFFFF);
+        x += posXWidth + 2;
+
+        client.drawString(",", x, y, 1, 0xFF0000);
+        x += 5;
+
+        String posY = client.getLocalY() + client.getAreaY() + "";
+        int posYWidth = client.getGraphics().getFontMetrics().stringWidth(posY);
+        client.drawString(posY, x, y, 1, 0xFFFFFF);
+        x += posYWidth + 2;
+
+        client.drawString(")", x, y, 1, 0xFF0000);
+        y += 17;
+        x = lineBeginX;
 
         client.drawString("XP: " +
                         dformat.format(getTotalXp() - startingXP),
-                x, y, 2, 0xFFFFFF);
+                x, y, 1, 0xFFFFFF);
 
         ScriptListener.get().onPaintTick();
     }
