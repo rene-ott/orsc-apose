@@ -5,6 +5,8 @@ lib/third-party/*
 # APOS property files
 *.properties
 
+*.csv
+
 # Compiled class file
 build/
 
