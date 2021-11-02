@@ -12,7 +12,6 @@ public interface IClient {
     void setParentInit(IClientInit init);
 
     Dimension getPreferredSize();
-    Graphics getGraphics();
 
     void keyPressed(KeyEvent event);
 

@@ -21,7 +21,7 @@ public final class PaintListener
     private static final PaintListener instance = new PaintListener();
     public static volatile boolean render_solid = true;
     public static volatile boolean render_textures = true;
-    private final DecimalFormat dformat = new DecimalFormat("#,##0.0#");
+    private static final DecimalFormat XP_DECIMAL_FORMAT = new DecimalFormat("#,##0.0#");
     private final Dimension d = new Dimension();
     private IClient client;
     private boolean enabled = true;
@@ -110,10 +110,10 @@ public final class PaintListener
         if (!enabled) return;
 
         final int hits = client.getCurrentLevel(3);
-        final int base_hits = client.getBaseLevel(3);
+        final int baseHits = client.getBaseLevel(3);
 
         final int pray = client.getCurrentLevel(5);
-        final int base_pray = client.getBaseLevel(5);
+        final int basePray = client.getBaseLevel(5);
 
         int x, y;
 
@@ -126,65 +126,26 @@ public final class PaintListener
             y = 135;
         }
 
-        int lineBeginX = x;
-
-
-        String hits1 = String.format("Hits: %d", hits);
-        int hits1Width = client.getGraphics().getFontMetrics().stringWidth(hits1);
-        client.drawString(hits1, x, y, 1, 0xFFFFFF);
-        x += hits1Width + 2;
-
-        client.drawString("/", x, y, 1, 0xFF0000);
-        x += 5;
-
-        client.drawString(Integer.toString(base_hits), x, y, 1, 0xFFFFFF);
-        x = lineBeginX;
+        client.drawString(String.format("Hits: %d@red@/@whi@%d", hits, baseHits), x, y, 1, 0xFFFFFF);
         y += 17;
 
-        String pray1 = String.format("Pray: %d", pray);
-        int pray1Width = client.getGraphics().getFontMetrics().stringWidth(pray1);
-        client.drawString(pray1, x, y, 1, 0xFFFFFF);
-        x += pray1Width + 4;
-
-        client.drawString("/", x, y, 1, 0xFF0000);
-        x +=5;
-
-        client.drawString(Integer.toString(base_pray), x, y, 1, 0xFFFFFF);
-        y += 17;
-        x = lineBeginX;
-
-        client.drawString(String.format("Fatigue: %.2f%%",
-                        client.getFatigue()),
-                x, y, 1, 0xFFFFFF);
+        client.drawString(String.format("Pray: %d@red@/@whi@%d", pray, basePray), x, y, 1, 0xFFFFFF);
         y += 17;
 
-        client.drawString("Tile: ", x, y, 1, 0xFFFFFF);
-        x += 26;
-
-        client.drawString("(", x, y, 1, 0xFF0000);
-        x += 5;
-
-        // See oli 15
-        String posX = client.getLocalX() + client.getAreaX() + "";
-        int posXWidth = client.getGraphics().getFontMetrics().stringWidth(posX);
-        client.drawString(posX, x, y, 1, 0xFFFFFF);
-        x += posXWidth + 2;
-
-        client.drawString(",", x, y, 1, 0xFF0000);
-        x += 5;
-
-        String posY = client.getLocalY() + client.getAreaY() + "";
-        int posYWidth = client.getGraphics().getFontMetrics().stringWidth(posY);
-        client.drawString(posY, x, y, 1, 0xFFFFFF);
-        x += posYWidth + 2;
-
-        client.drawString(")", x, y, 1, 0xFF0000);
+        String formattedFatigue = String.format("%.2f", client.getFatigue());
+        String[] splitFatigue = formattedFatigue.split(",");
+        client.drawString(String.format("Fatigue: %s@red@.@whi@%s", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
         y += 17;
-        x = lineBeginX;
 
-        client.drawString("XP: " +
-                        dformat.format(getTotalXp() - startingXP),
-                x, y, 1, 0xFFFFFF);
+        int posX = client.getLocalX() + client.getAreaX();
+        int posY = client.getLocalY() + client.getAreaY() ;
+        client.drawString(String.format("Tile: @red@(@whi@%d@red@, @whi@%d@red@)", posX, posY), x, y, 1, 0xFFFFFF);
+
+        y += 17;
+
+        String formattedXp = XP_DECIMAL_FORMAT.format(getTotalXp() - startingXP);
+        String[] splitXp = formattedXp.split(",");
+        client.drawString(String.format("XP: %s@red@.@whi@%s", splitXp[0], splitXp[1]), x, y, 1, 0xFFFFFF);
 
         ScriptListener.get().onPaintTick();
     }

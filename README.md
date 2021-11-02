@@ -13,7 +13,7 @@ The following information is sent:
 
 #### How to use
 Follow the instructions to set up the [APOS+ Report API](https://github.com/rene-ott/orsc-aposp-report)
-Configure following values in the `./conf/bot.properties` file:
+Create configuration file and set following values in the `./conf/bot.properties` file:
 1) report_api_url - APOS+ Report API report endpoint URL.
 2) report_api_key - APOS+ Report API api key, which is necessary to authenticate the request to endpoint.
 3) report_interval - The time interval after which the report is passed to the API. Format `hh:mm:ss` where `hh` hours, `mm` minutes and `ss` seconds.
