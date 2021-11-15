@@ -2994,11 +2994,12 @@ public abstract class Script
     @Deprecated
     public int[][] getSkillLevels() {
 
-        int[][] skills = new int[SKILL.length][3];
+        int[][] skills = new int[SKILL.length][4];
         for (int i = 0; i < SKILL.length; i++) {
             skills[i][0] = i;
             skills[i][1] = getCurrentLevel(i);
             skills[i][2] = getLevel(i);
+            skills[i][3] = getXpForLevel(i);
         }
 
         return skills;
