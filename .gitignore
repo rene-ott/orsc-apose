@@ -13,3 +13,4 @@ build/
 # Exclude Scripts
 Scripts/*
 !Scripts/.gitkeep 
+Screenshots/
