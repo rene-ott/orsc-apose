@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 public class ReportDto {
 
     public String username;
+    public String base64EncodedScreenshot;
     public String bankViewTimestamp;
 
     public SkillDto skill;
@@ -15,9 +16,10 @@ public class ReportDto {
     public List<ItemDto> bankItems;
     public List<ItemDto> inventoryItems;
 
-    public static ReportDto create(String username, int[][] inventoryItems,
+    public static ReportDto create(String username, String base64EncodedScreenshot, int[][] inventoryItems,
                                    int[][] skillLevels, Instant bankViewTimestamp, int[][] bankItems) {
         ReportDto report = new ReportDto();
+        report.base64EncodedScreenshot = base64EncodedScreenshot;
         report.username = username;
 
         report.skill = SkillDto.Create(skillLevels);
