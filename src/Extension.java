@@ -11,6 +11,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Extension extends client
         implements IClient {
@@ -977,5 +979,66 @@ public class Extension extends client
     @Override
     public void setServerAddress(String serverAddress) {
         Dh = serverAddress;
+    }
+
+    /**
+     * Returns list of current inventory items - used internally for reporting
+     */
+    public int[][] getInventoryItems() {
+        int inventoryCount = getInventorySize();
+
+        int[][] inventoryItems = new int[inventoryCount][3];
+        for (int i = 0; i < inventoryCount; i++) {
+            int itemId = getInventoryId(i);
+            inventoryItems[i][0] = itemId;
+            inventoryItems[i][1] = getInventoryStack(i);
+            inventoryItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
+        }
+
+        return inventoryItems;
+    }
+
+    /**
+     * Returns list of current skill levels - used internally for reporting.
+     */
+    public int[][] getSkillLevels() {
+
+        int[][] skills = new int[StaticAccess.get().getSkillNames().length][4];
+        for (int i = 0; i < StaticAccess.get().getSkillNames().length; i++) {
+            skills[i][0] = i;
+            skills[i][1] = getCurrentLevel(i);
+            skills[i][2] = getBaseLevel(i);
+            skills[i][3] = (int) getExperience(i);
+        }
+
+        return skills;
+    }
+
+    /**
+     * Returns list of current bank items - used internally for reporting.
+     */
+    public int[][] getBankItems() {
+        int bankCount = getBankSize();
+
+        List<Integer[]> bankItems = new ArrayList<>();
+        for (int i = 0; i < bankCount; i++) {
+            int itemId = getBankId(i);
+            int itemCount = getBankStack(i);
+            if (itemCount == 0)
+                continue;
+
+            Integer[] bankItem = new Integer[] {itemId, itemCount, StaticAccess.get().isItemStackable(itemId) ? 1 : 0 };
+            bankItems.add(bankItem);
+        }
+
+        int[][] result = new int[bankItems.size()][3];
+        for (int i = 0; i < bankItems.size(); i++) {
+            Integer[] bankItem = bankItems.get(i);
+            result[i][0] = bankItem[0];
+            result[i][1] = bankItem[1];
+            result[i][2] = bankItem[2];
+        }
+
+        return result;
     }
 }

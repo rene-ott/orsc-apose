@@ -1,6 +1,8 @@
+import com.aposbot._default.IClient;
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
 import com.aposbot.common.BotPropReader;
+import com.aposbot.common.ReflectionUtil;
 import com.aposbot.report.ReportDto;
 import com.aposbot.report.ReportIntervalConverter;
 import com.aposbot.report.ReportPropReader;
@@ -13,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Objects;
 
 public final class ScriptListener
         implements IScriptListener {
@@ -104,13 +107,17 @@ public final class ScriptListener
     private void reportUserInformation() {
         Script script = (Script) this.script;
 
+        IClient client = ReflectionUtil.getFieldValue(script, "client");
+        Objects.requireNonNull(client);
+        Extension extension = (Extension) client;
+
         ReportDto dto = ReportDto.create(
-                script.getUsername(),
-                getBase64EncodedScreenshot(),
-                script.getInventoryItems(),
-                script.getSkillLevels(),
-                script.getBankViewTimestamp(),
-                script.getViewedBankItems()
+            AutoLogin.get().getUsername(),
+            getBase64EncodedScreenshot(),
+            extension.getInventoryItems(),
+            extension.getSkillLevels(),
+            ReflectionUtil.getFieldValue(script, "bankViewTimestamp"),
+            ReflectionUtil.getFieldValue(script, "viewedBankItems")
         );
 
         if (reportService == null) {
