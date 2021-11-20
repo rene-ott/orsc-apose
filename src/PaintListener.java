@@ -134,7 +134,7 @@ public final class PaintListener
 
         String formattedFatigue = String.format("%.2f", client.getFatigue());
         String[] splitFatigue = formattedFatigue.split(",");
-        client.drawString(String.format("Fatigue: %s@red@.@whi@%s@red@%%", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
+        client.drawString(String.format("Fatigue: %s.%s@red@%%", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
         y += 17;
 
         int posX = client.getLocalX() + client.getAreaX();
