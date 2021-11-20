@@ -586,7 +586,7 @@ public class Extension extends client
     @Override
     public void walkToObject(int destLX, int destLY, int dir, int id) {
         // Commented out - enhances interaction with objects
-        // b(5126, id, destLX, destLY, dir);
+         b(5126, id, destLX, destLY, dir);
     }
 
     @Override
