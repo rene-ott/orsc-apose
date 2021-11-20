@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public final class BotFrame extends Frame {
     private AVStub stub;
 
     BotFrame(IClientInit init, final TextArea cTextArea, String account) {
-        super("APOS (" + account + ")");
+        super("APOS+ (" + account + ")");
         setFont(Constants.UI_FONT);
         setIconImages(Constants.ICONS);
 
@@ -42,7 +44,7 @@ public final class BotFrame extends Frame {
         if (SystemTray.isSupported()) {
             TrayIcon icon = null;
             if (Constants.ICON_16 != null) {
-                icon = new TrayIcon(Constants.ICON_16, "APOS (" + account + ")");
+                icon = new TrayIcon(Constants.ICON_16, "APOS+ (" + account + ")");
             }
             if (icon != null) {
                 icon.addMouseListener(new MouseAdapter() {
@@ -145,7 +147,6 @@ public final class BotFrame extends Frame {
                                 script.init("");
                         } catch (Throwable t) {
                                 System.out.println("issue with script.");
-
                         }
                         client.getScriptListener().setIScript(script);
 
@@ -350,7 +351,10 @@ public final class BotFrame extends Frame {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         try {
-            ImageIO.write(b, "png", new File(name));
+            File file = new File(name);
+            Files.createDirectories(Paths.get(file.getParent()));
+
+            ImageIO.write(b, "png", file);
             System.out.println("Saved " + name + ".");
         } catch (final Throwable t) {
             System.out.println("Error taking screenshot: " + t.toString());
