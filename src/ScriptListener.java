@@ -30,8 +30,8 @@ public final class ScriptListener
     private boolean newWord;
     private volatile boolean banned;
 
-    private boolean reporting;
-    private boolean reportScreenshot;
+    private volatile boolean reporting;
+    private volatile boolean reportScreenshot;
 
     private static long reportIntervalInMillis;
     private static long lastReportTimeInMillis = -1;
