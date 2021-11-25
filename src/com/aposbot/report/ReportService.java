@@ -41,8 +41,11 @@ public class ReportService {
             if (response.getCode() == 200) {
                 System.out.println("Sent API report successfully");
             }
+            if (response.getCode() == 401) {
+                System.out.println("Failed to send API report: Authentication failed");
+            }
         } catch (IOException | ExecutionException | InterruptedException e) {
-            System.out.println("Failed to send API report");
+            System.out.println("Failed to send API report: Exception");
         }
     }
 
