@@ -2040,7 +2040,7 @@ public abstract class Script
         if (!isBankVisible)
             return false;
 
-        viewedBankItems = getBankItems();
+        viewedBankItems = ((Extension) client).getBankItems();
         bankViewTimestamp = Instant.now();
 
         return true;
@@ -3019,98 +3019,5 @@ public abstract class Script
 
     public int getGameHeight() {
         return client.getGameHeight();
-    }
-
-    /**
-     * Returns list of bank items based on the last time the script opened the bank.
-     *
-     * @deprecated  Not for public use - used internally for reporting.
-     */
-    @Deprecated
-    public int[][] getViewedBankItems() {
-        return viewedBankItems;
-    }
-
-    /**
-     * Returns the timestamp of the last time when script opened the bank.
-     *
-     * @deprecated  Not for public use - used internally for reporting.
-     */
-    @Deprecated
-    public Instant getBankViewTimestamp() {
-        return bankViewTimestamp;
-    }
-
-    /**
-     * Returns list of current inventory items.
-     *
-     * @deprecated  Not for public use - used internally for reporting.
-     */
-    @Deprecated
-    public int[][] getInventoryItems() {
-        int inventoryCount = getInventoryCount();
-
-        int[][] inventoryItems = new int[inventoryCount][3];
-        for (int i = 0; i < inventoryCount; i++) {
-            int itemId = getInventoryId(i);
-            inventoryItems[i][0] = itemId;
-            inventoryItems[i][1] = getInventoryStack(i);
-            inventoryItems[i][2] = StaticAccess.get().isItemStackable(itemId) ? 1 : 0;
-        }
-
-        return inventoryItems;
-    }
-
-    /**
-     * Returns list of current skill levels.
-     *
-     * @deprecated  Not for public use - used internally for reporting.
-     */
-    @Deprecated
-    public int[][] getSkillLevels() {
-
-        int[][] skills = new int[SKILL.length][3];
-        for (int i = 0; i < SKILL.length; i++) {
-            skills[i][0] = i;
-            skills[i][1] = getCurrentLevel(i);
-            skills[i][2] = getLevel(i);
-        }
-
-        return skills;
-    }
-
-    private int[][] getBankItems() {
-        int bankCount = getBankSize();
-
-        List<Integer[]> bankItems = new ArrayList<>();
-        for (int i = 0; i < bankCount; i++) {
-            int itemId = getBankId(i);
-            int itemCount = getBankStack(i);
-            if (itemCount == 0)
-                continue;
-
-            Integer[] bankItem = new Integer[] {itemId, itemCount, StaticAccess.get().isItemStackable(itemId) ? 1 : 0 };
-            bankItems.add(bankItem);
-        }
-
-        int[][] result = new int[bankItems.size()][3];
-        for (int i = 0; i < bankItems.size(); i++) {
-            Integer[] bankItem = bankItems.get(i);
-            result[i][0] = bankItem[0];
-            result[i][1] = bankItem[1];
-            result[i][2] = bankItem[2];
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns username of current user.
-     *
-     * @deprecated  Not for public use - used internally for reporting.
-     */
-    @Deprecated
-    public String getUsername() {
-        return AutoLogin.get().getUsername();
     }
 }

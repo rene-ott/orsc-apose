@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public final class BotFrame extends Frame {
     private AVStub stub;
 
     BotFrame(IClientInit init, final TextArea cTextArea, String account) {
-        super("APOS (" + account + ")");
+        super("APOS+ (" + account + ")");
         setFont(Constants.UI_FONT);
         setIconImages(Constants.ICONS);
 
@@ -42,7 +44,7 @@ public final class BotFrame extends Frame {
         if (SystemTray.isSupported()) {
             TrayIcon icon = null;
             if (Constants.ICON_16 != null) {
-                icon = new TrayIcon(Constants.ICON_16, "APOS (" + account + ")");
+                icon = new TrayIcon(Constants.ICON_16, "APOS+ (" + account + ")");
             }
             if (icon != null) {
                 icon.addMouseListener(new MouseAdapter() {
@@ -145,7 +147,6 @@ public final class BotFrame extends Frame {
                                 script.init("");
                         } catch (Throwable t) {
                                 System.out.println("issue with script.");
-
                         }
                         client.getScriptListener().setIScript(script);
 
@@ -214,7 +215,7 @@ public final class BotFrame extends Frame {
         setColours(gfxCheck);
         gfxCheck.addItemListener(e -> client.setRendering(gfxCheck.getState()));
 
-        final Checkbox paintCheck = new Checkbox("Show bot layer",
+        final Checkbox paintCheck = new Checkbox("Bot layer",
                 true);
         setColours(paintCheck);
         paintCheck.addItemListener(e -> {
@@ -222,28 +223,34 @@ public final class BotFrame extends Frame {
             paint.setPaintingEnabled(paintCheck.getState());
         });
 
-        final Checkbox r3d = new Checkbox("Plain 3D", true);
+        final Checkbox r3d = new Checkbox("P3D", true);
         setColours(r3d);
         r3d.addItemListener(e -> {
             final IPaintListener paint = client.getPaintListener();
             paint.setRenderSolid(r3d.getState());
         });
 
-        final Checkbox t3d = new Checkbox("Textured 3D", true);
+        final Checkbox t3d = new Checkbox("T3D", true);
         setColours(t3d);
         t3d.addItemListener(e -> {
             final IPaintListener paint = client.getPaintListener();
             paint.setRenderTextures(t3d.getState());
         });
 
-        boolean isReportEnabled = ReportPropReader.getApiKey() != null && ReportPropReader.getApiUrl() != null;
-        final Checkbox reportCheck = new Checkbox("Report", isReportEnabled);
-        reportCheck.setEnabled(isReportEnabled);
+        final Checkbox sendReportCheck = new Checkbox("Send report", false);
 
-        setColours(reportCheck);
-        reportCheck.addItemListener(e -> {
+        setColours(sendReportCheck);
+        sendReportCheck.addItemListener(e -> {
             final IScriptListener sl = client.getScriptListener();
-            sl.setReporting(reportCheck.getState());
+            sl.setReporting(sendReportCheck.getState());
+        });
+
+        final Checkbox sendReportIncludeScreenshotCheck = new Checkbox("Report screenshot", false);
+
+        setColours(sendReportIncludeScreenshotCheck);
+        sendReportIncludeScreenshotCheck.addItemListener(e -> {
+            final IScriptListener sl = client.getScriptListener();
+            sl.setReportScreenshot(sendReportIncludeScreenshotCheck.getState());
         });
 
         checkPanel.add(loginCheck);
@@ -251,7 +258,8 @@ public final class BotFrame extends Frame {
         checkPanel.add(paintCheck);
         checkPanel.add(r3d);
         checkPanel.add(t3d);
-        checkPanel.add(reportCheck);
+        checkPanel.add(sendReportCheck);
+        checkPanel.add(sendReportIncludeScreenshotCheck);
 
         ((Component) client)
                 .addComponentListener(new ComponentAdapter() {
@@ -350,7 +358,10 @@ public final class BotFrame extends Frame {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         try {
-            ImageIO.write(b, "png", new File(name));
+            File file = new File(name);
+            Files.createDirectories(Paths.get(file.getParent()));
+
+            ImageIO.write(b, "png", file);
             System.out.println("Saved " + name + ".");
         } catch (final Throwable t) {
             System.out.println("Error taking screenshot: " + t.toString());

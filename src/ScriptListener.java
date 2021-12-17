@@ -1,10 +1,19 @@
+import com.aposbot._default.IClient;
 import com.aposbot._default.IScript;
 import com.aposbot._default.IScriptListener;
-import com.aposbot.common.BotPropReader;
+import com.aposbot.common.ReflectionUtil;
 import com.aposbot.report.ReportDto;
 import com.aposbot.report.ReportIntervalConverter;
 import com.aposbot.report.ReportPropReader;
 import com.aposbot.report.ReportService;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Objects;
 
 public final class ScriptListener
         implements IScriptListener {
@@ -21,7 +30,9 @@ public final class ScriptListener
     private boolean newWord;
     private volatile boolean banned;
 
-    private volatile boolean reporting = true;
+    private volatile boolean reporting;
+    private volatile boolean reportScreenshot;
+
     private static long reportIntervalInMillis;
     private static long lastReportTimeInMillis = -1;
 
@@ -89,18 +100,34 @@ public final class ScriptListener
         return instance;
     }
 
+    private boolean isTempRenderingEnabled;
+    private boolean isRenderingEnabled;
+
     @Override
     public void onGameTick() {
         if (banned) {
             return;
         }
         if (running) {
-            long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
-            if (timeDifferenceInMillis > reportIntervalInMillis) {
-                lastReportTimeInMillis = System.currentTimeMillis();
 
-                if (reporting) {
+            if (reporting) {
+                long timeDifferenceInMillis = System.currentTimeMillis() - lastReportTimeInMillis;
+
+                if (timeDifferenceInMillis > reportIntervalInMillis - 1000 && !isTempRenderingEnabled) {
+                    if (reporting && reportScreenshot) {
+                        isRenderingEnabled = ex.isRendering();
+                        isTempRenderingEnabled = true;
+                        ex.setRendering(true);
+                    }
+                }
+
+                if (timeDifferenceInMillis > reportIntervalInMillis) {
+                    lastReportTimeInMillis = System.currentTimeMillis();
                     reportUserInformation();
+                    if (reportScreenshot) {
+                        ex.setRendering(isRenderingEnabled);
+                        isTempRenderingEnabled = false;
+                    }
                 }
             }
 
@@ -127,22 +154,43 @@ public final class ScriptListener
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void reportUserInformation() {
         Script script = (Script) this.script;
 
+        IClient client = ReflectionUtil.getFieldValue(script, "client");
+        Objects.requireNonNull(client);
+        Extension extension = (Extension) client;
+
         ReportDto dto = ReportDto.create(
-                script.getUsername(),
-                script.getInventoryItems(),
-                script.getSkillLevels(),
-                script.getBankViewTimestamp(),
-                script.getViewedBankItems()
+            AutoLogin.get().getUsername(),
+            reportScreenshot ? getBase64EncodedScreenshot() : null,
+            extension.getInventoryItems(),
+            extension.getSkillLevels(),
+            ReflectionUtil.getFieldValue(script, "bankViewTimestamp"),
+            ReflectionUtil.getFieldValue(script, "viewedBankItems")
         );
 
         if (reportService == null) {
             reportService = ReportService.create();
         }
         reportService.sendReport(dto);
+    }
+
+    private String getBase64EncodedScreenshot() {
+        final Image image = instance.ex.getImage();
+        final BufferedImage b = new BufferedImage(image.getWidth(null),
+                image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        final Graphics g = b.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(b, "png", baos);
+        } catch (IOException e) {
+            return null;
+        }
+        byte[] bytes = baos.toByteArray();
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     @Override
@@ -335,5 +383,10 @@ public final class ScriptListener
     @Override
     public void setReporting(boolean b) {
         reporting = b;
+    }
+
+    @Override
+    public void setReportScreenshot(boolean b) {
+        reportScreenshot = b;
     }
 }

@@ -12,4 +12,5 @@ build/
 
 # Exclude Scripts
 Scripts/*
-!Scripts/.gitkeep 
+!Scripts/PathWalker.java 
+Screenshots/

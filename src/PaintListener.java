@@ -134,7 +134,7 @@ public final class PaintListener
 
         String formattedFatigue = String.format("%.2f", client.getFatigue());
         String[] splitFatigue = formattedFatigue.split(",");
-        client.drawString(String.format("Fatigue: %s@red@.@whi@%s", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
+        client.drawString(String.format("Fatigue: %s.%s@red@%%", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
         y += 17;
 
         int posX = client.getLocalX() + client.getAreaX();
@@ -145,7 +145,7 @@ public final class PaintListener
 
         String formattedXp = XP_DECIMAL_FORMAT.format(getTotalXp() - startingXP);
         String[] splitXp = formattedXp.split(",");
-        client.drawString(String.format("XP: %s@red@.@whi@%s", splitXp[0], splitXp[1]), x, y, 1, 0xFFFFFF);
+        client.drawString(String.format("XP: %s.%s", splitXp[0], splitXp[1]), x, y, 1, 0xFFFFFF);
 
         ScriptListener.get().onPaintTick();
     }

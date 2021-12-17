@@ -40,4 +40,6 @@ public interface IScriptListener {
     void setBanned(boolean b);
 
     void setReporting(boolean b);
+
+    void setReportScreenshot(boolean b);
 }
