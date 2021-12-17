@@ -2,6 +2,13 @@
 
 This is a fork of [ORSC APOS](https://gitlab.com/open-runescape-classic/APOS) with extended features. The solution doesn't include scripts ie Scripts directory is empty.
 Also, this implementation depends on external libraries. Make sure to install 3rd party dependencies via `restore-libs.cmd` task. These libraries are required to make account reporting work.
+
+## APOS scripts compatibility with APOS+
+New changes from APOS repo are manually merged to APOS+ repository. This means when the APOS gets new features they are not immedtialy available in the APOS+. 
+Also, if there are new Scripts available for APOS which use some new API methods from the APOS, these scripts might not work unless necessary changes are merged to APOS+.
+
+*Compatible with commit version:* [03 Dec, 2021](https://gitlab.com/open-runescape-classic/APOS/-/commit/0e79dd3108e70e63dea719d3ba428e5924730389)
+
 ## Extended features
 
 ### Account report
@@ -25,7 +32,3 @@ report_api_key=hello123
 report_interval=00:10:00
 ```
 Start the bot and enable the `Report` checkbox
-
-### Other features
- - Script selection menu contains script search functionality.
- - Script source can be compiled separately from bot source files with task `compile-scripts.cmd`.
