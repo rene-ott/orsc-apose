@@ -198,6 +198,17 @@ public class Extension extends client
     }
 
     @Override
+    public void closeWildernessWarning() {
+        le = 2;
+    }
+
+    @Override
+    public boolean isDeathScreen() {
+        return rk > 0;
+    }
+
+
+    @Override
     public int getLocalX() {
         return Lf;
     }
@@ -743,6 +754,17 @@ public class Extension extends client
     public int getNpcId(Object mob) {
         return ((ta) mob).t;
     }
+
+    @Override
+    public int getProjectileDamagedNpcServerIndex() {
+        return wi.h;
+    }
+
+    @Override
+    public int getProjectileDamagedPlayerServerIndex() {
+        return wi.z;
+    }
+
 
     @Override
     public boolean isMobWalking(Object mob) {
