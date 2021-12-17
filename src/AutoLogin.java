@@ -69,9 +69,20 @@ public final class AutoLogin
         instance.onWelcomeBoxTick();
     }
 
+    public static void wildernessWarningCallback()
+    {
+        instance.onWildernessWarning();
+    }
+
     static AutoLogin get() {
         return instance;
     }
+
+    @Override
+    public void onWildernessWarning() {
+        c.closeWildernessWarning();
+    }
+
 
     @Override
     public void onLoginTick() {
