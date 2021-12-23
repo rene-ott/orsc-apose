@@ -34,6 +34,7 @@ public class ReportService {
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
             httpclient.start();
             SimpleHttpRequest postRequest = SimpleHttpRequest.create(Method.POST.toString(), url);
+            postRequest.setHeader("User-Agent", "APOS+");
             postRequest.setHeader("X-API-KEY", apiKey);
             postRequest.setBody(jsonBody, ContentType.APPLICATION_JSON);
             HttpResponse response = httpclient.execute(postRequest, null).get();
