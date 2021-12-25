@@ -1,3 +1,4 @@
 [submodule "Scripts"]
 	path = Scripts
 	url = https://github.com/rene-ott/orsc-aposp-scripts-private.git
+	branch = master
