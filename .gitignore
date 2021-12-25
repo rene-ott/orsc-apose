@@ -11,6 +11,4 @@ lib/third-party/*
 build/
 
 # Exclude Scripts
-Scripts/*
-!Scripts/PathWalker.java 
 Screenshots/
