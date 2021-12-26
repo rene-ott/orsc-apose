@@ -132,6 +132,9 @@ public final class PaintListener
         client.drawString(String.format("Pray: %d@red@/@whi@%d", pray, basePray), x, y, 1, 0xFFFFFF);
         y += 17;
 
+        client.drawString(String.format("PID: %d", client.getMobServerIndex(client.getPlayer())), x, y, 1, 0xFFFFFF);
+        y += 17;
+
         String formattedFatigue = String.format("%.2f", client.getFatigue());
         String[] splitFatigue = formattedFatigue.split(",");
         client.drawString(String.format("Fatigue: %s.%s@red@%%", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
