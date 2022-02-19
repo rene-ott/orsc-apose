@@ -135,20 +135,14 @@ public final class PaintListener
         client.drawString(String.format("PID: %d", client.getMobServerIndex(client.getPlayer())), x, y, 1, 0xFFFFFF);
         y += 17;
 
-        String formattedFatigue = String.format("%.2f", client.getFatigue());
-        String[] splitFatigue = formattedFatigue.split(",");
-        client.drawString(String.format("Fatigue: %s.%s@red@%%", splitFatigue[0], splitFatigue[1]), x, y, 1, 0xFFFFFF);
+        client.drawString(String.format("Fatigue: %.2f@red@%%", client.getFatigue()), x, y, 1, 0xFFFFFF);
         y += 17;
 
-        int posX = client.getLocalX() + client.getAreaX();
-        int posY = client.getLocalY() + client.getAreaY() ;
-        client.drawString(String.format("Tile: @red@(@whi@%d@red@, @whi@%d@red@)", posX, posY), x, y, 1, 0xFFFFFF);
-
+        client.drawString(String.format("Tile: @red@(@whi@%d@red@, @whi@%d@red@)", client.getLocalX() + client.getAreaX(), client.getLocalY() + client.getAreaY()),
+                x, y, 1, 0xFFFFFF);
         y += 17;
 
-        String formattedXp = XP_DECIMAL_FORMAT.format(getTotalXp() - startingXP);
-        String[] splitXp = formattedXp.split(",");
-        client.drawString(String.format("XP: %s.%s", splitXp[0], splitXp[1]), x, y, 1, 0xFFFFFF);
+        client.drawString("XP: " + XP_DECIMAL_FORMAT.format(getTotalXp() - startingXP), x, y, 1, 0xFFFFFF);
 
         ScriptListener.get().onPaintTick();
     }
