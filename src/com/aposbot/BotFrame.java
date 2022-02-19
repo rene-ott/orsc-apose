@@ -286,6 +286,7 @@ public final class BotFrame extends Frame {
             add(checkPanel, BorderLayout.SOUTH);
         }
 
+        setResizable(false);
         pack();
         setMinimumSize(getSize());
 
