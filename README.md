@@ -32,3 +32,6 @@ report_api_key=hello123
 report_interval=00:10:00
 ```
 Start the bot and enable the `Report` checkbox
+
+### Proxy
+TODO: Include description

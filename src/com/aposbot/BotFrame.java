@@ -2,7 +2,6 @@ package com.aposbot;
 
 import com.aposbot._default.*;
 import com.aposbot.applet.AVStub;
-import com.aposbot.report.ReportPropReader;
 
 import javax.imageio.ImageIO;
 import java.applet.Applet;

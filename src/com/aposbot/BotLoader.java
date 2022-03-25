@@ -1,10 +1,12 @@
 package com.aposbot;
 
 import com.aposbot._default.IClientInit;
-import com.aposbot.common.BotPropReader;
+import com.aposbot.common.BotProperties;
+import com.aposbot.common.ProxyAuth;
 
 import java.awt.*;
 import java.io.PrintStream;
+import java.net.PasswordAuthentication;
 import java.util.Properties;
 
 public final class BotLoader {
@@ -42,7 +44,27 @@ public final class BotLoader {
             System.setOut(ps);
             System.setErr(ps);
         }
-        Properties p = BotPropReader.getProperties();
+
+
+        String proxyHost = BotProperties.getProxyHost();
+        String proxyPort = BotProperties.getProxyPort();
+
+        if (proxyHost != null && proxyPort != null) {
+            System.setProperty("socksProxyHost", proxyHost);
+            System.setProperty("socksProxyPort", proxyPort);
+
+            String proxyUsername = BotProperties.getProxyUsername();
+            String proxyPassword = BotProperties.getProxyPassword();
+
+            if (proxyUsername != null && proxyPassword != null) {
+                System.setProperty("java.net.socks.username", proxyUsername);
+                System.setProperty("java.net.socks.password", proxyPassword);
+
+                java.net.Authenticator.setDefault(new ProxyAuth(BotProperties.getProxyUsername(), BotProperties.getProxyPassword()));
+            }
+        }
+
+        Properties p = BotProperties.getProperties();
 		if (p != null) {
 			try {
 				username = p.getProperty("auth_user");
@@ -64,7 +86,7 @@ public final class BotLoader {
     public void storeProperties(final Properties props) {
         Properties p = props;
     	if (p == null) {
-            p = BotPropReader.getProperties();
+            p = BotProperties.getProperties();
         }
 
         if (p != null) {
@@ -72,7 +94,7 @@ public final class BotLoader {
             p.put("auth_pass", password);
             p.put("default_ocr", String.valueOf(defaultOCR));
             p.put("font", font == null ? "" : font);
-            BotPropReader.storeProperties(p);
+            BotProperties.storeProperties(p);
         }
     }
 
